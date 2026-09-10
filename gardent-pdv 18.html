@@ -1,0 +1,3315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>GARDENT · Nota de Venta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EAEDF4;
+    --surface:#FFFFFF;
+    --ink:#172038;
+    --ink-soft:#57607C;
+    --ink-faint:#93A0B9;
+    --navy:#0F1B3C;
+    --navy-dark:#0A1330;
+    --gold:#C6A15B;
+    --gold-dark:#A9843F;
+    --border:#DDE2EC;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(21,32,64,0.05), 0 14px 34px -16px rgba(21,32,64,0.22);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:'Inter',-apple-system,sans-serif; -webkit-font-smoothing:antialiased; padding:18px 14px 48px;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif; margin:0;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  .page-wrap{max-width:1180px; margin:0 auto;}
+
+  .nota-doc{
+    background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow);
+    overflow:hidden; border-top:4px solid var(--gold);
+  }
+
+  /* ---------------- ENCABEZADO (banda azul marino, sangrado completo) ---------------- */
+  .doc-header{
+    background:var(--navy); color:#fff; padding:22px 26px;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  }
+  .hdr-left{display:flex; align-items:center; gap:16px;}
+  .hdr-logo{
+    width:66px; height:66px; border-radius:12px; border:2px solid var(--gold); object-fit:cover;
+    background:var(--navy-dark); flex-shrink:0; display:block;
+  }
+  .hdr-brand{font-size:23px; font-weight:700; letter-spacing:0.4px; line-height:1.15; font-family:'Space Grotesk',sans-serif;}
+  .hdr-addr{font-size:13.5px; color:rgba(255,255,255,0.78); margin-top:5px;}
+  .hdr-contact{font-size:12.5px; color:rgba(255,255,255,0.55); margin-top:3px;}
+  .hdr-right{text-align:right;}
+  .hdr-right-block{margin-bottom:8px;}
+  .hdr-lbl{font-size:10.5px; font-weight:700; letter-spacing:1.1px; text-transform:uppercase; color:rgba(255,255,255,0.5);}
+  .hdr-val{font-size:15.5px; font-weight:700; color:#fff; margin-top:2px;}
+  .hdr-folio-line{font-size:13.5px; margin-top:6px; color:rgba(255,255,255,0.82);}
+  .hdr-folio-line b{color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:19px; letter-spacing:0.4px; margin-left:2px;}
+  .hdr-dt{font-size:12.5px; color:rgba(255,255,255,0.55); margin-top:3px;}
+
+  .nota-inner{padding:20px 26px 26px;}
+
+  /* ---------------- ETIQUETAS DE SECCIÓN ---------------- */
+  .doc-label{
+    font-size:15px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; color:var(--navy);
+    margin:20px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--gold);
+    display:flex; align-items:center; justify-content:space-between; font-family:'Space Grotesk',sans-serif;
+  }
+  .doc-label:first-child{margin-top:0;}
+  .link-btn{
+    background:none; border:none; color:var(--gold-dark); font-weight:700; font-size:13.5px; cursor:pointer;
+    padding:0; display:inline-flex; align-items:center; gap:5px; font-family:'Inter',sans-serif;
+  }
+  .link-btn:active{opacity:0.6;}
+
+  /* ---------------- CAMPOS ---------------- */
+  .field-row{display:grid; gap:0 20px; margin-bottom:16px;}
+  .row-numcli{grid-template-columns:200px 1fr;}
+  .row-full{grid-template-columns:1fr;}
+  .row-3{grid-template-columns:1fr 1fr 1fr;}
+  @media(max-width:640px){.row-numcli, .row-3{grid-template-columns:1fr;}}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field label{font-size:12.5px; font-weight:700; color:var(--ink-soft);}
+  .field input{
+    padding:12px 13px; font-size:15px; font-family:'Inter',sans-serif;
+    border:1.5px solid var(--border); border-radius:9px; background:#FBFCFE; color:var(--ink); width:100%;
+    -webkit-user-select:text; user-select:text; -webkit-touch-callout:default; touch-action:manipulation;
+  }
+  .field input:focus{outline:none; border-color:var(--navy); background:#fff;}
+  .field input[readonly]{background:#EEF1F8; color:var(--ink-soft); font-weight:600;}
+
+  /* ---------------- VENDEDOR / FORMA DE PAGO / CONDICIONES ---------------- */
+  .meta-row{display:flex; flex-wrap:wrap; gap:22px 30px; align-items:flex-start; margin:6px 0 4px;}
+  .meta-block{flex:1 1 auto; min-width:210px;}
+  .meta-block .m-lbl{font-size:12px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+  .vendedor-static{font-size:15.5px; font-weight:700; color:var(--navy);}
+  .seg{display:flex; gap:7px; flex-wrap:wrap;}
+  .seg button{
+    padding:10px 15px; font-size:14px; font-weight:700; border:1.5px solid var(--border); background:#FBFCFE;
+    color:var(--ink-soft); border-radius:9px; cursor:pointer; font-family:'Inter',sans-serif; transition:all .12s;
+    touch-action:manipulation;
+  }
+  .seg button.active{background:var(--navy); border-color:var(--navy); color:#fff;}
+  .seg button:active{transform:scale(0.96);}
+  .vence-line{font-size:13px; color:var(--ink-soft); margin-top:10px;}
+  .vence-line b{color:var(--navy); font-family:'JetBrains Mono',monospace;}
+
+  /* ---------------- TABLA DE PRODUCTOS ---------------- */
+  .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--border); border-radius:10px;}
+  table.products{width:100%; border-collapse:collapse; min-width:680px;}
+  table.products thead th{
+    background:#F4F6FA; color:var(--ink-soft); font-size:11.5px; text-transform:uppercase; letter-spacing:0.6px;
+    font-weight:700; padding:10px 10px; text-align:left; border-bottom:1.5px solid var(--border);
+  }
+  table.products th.num, table.products td.num{text-align:right;}
+  table.products th.idx, table.products td.idx{width:32px; text-align:center;}
+  table.products tbody td{padding:4px 8px; border-bottom:1px solid #EEF1F6;}
+  table.products tbody tr:last-child td{border-bottom:none;}
+  table.products .idx-num{color:var(--ink-faint); font-size:12.5px; font-weight:600;}
+  table.products input{border:1px solid transparent; border-radius:7px; padding:8px 8px; font-size:14.5px; width:100%; background:transparent; font-family:'Inter',sans-serif; -webkit-user-select:text; user-select:text; touch-action:manipulation;}
+  table.products input:hover{background:#F1F4FA;}
+  table.products input:focus{outline:none; background:#fff; border-color:var(--navy);}
+  table.products input.qty{text-align:center; max-width:64px;}
+  table.products input.code{text-align:center; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-soft); max-width:110px;}
+  table.products input.price{text-align:right; max-width:110px;}
+  table.products .importe{font-family:'JetBrains Mono',monospace; font-weight:600; text-align:right; padding-right:10px; color:var(--ink); white-space:nowrap; font-size:14.5px;}
+
+  /* ---------------- ESPACIO RESERVADO: TOTALES (sin lógica todavía) ---------------- */
+  .totals-wrap{display:flex; justify-content:flex-end; margin-top:18px;}
+  .totals-box{width:100%; max-width:300px;}
+  .totals-line{display:flex; justify-content:space-between; padding:6px 2px; font-size:14.5px; color:var(--ink-soft); font-weight:600;}
+  .totals-line .amt{font-family:'JetBrains Mono',monospace; color:var(--ink-faint);}
+  .totals-line.total{border-top:2px solid var(--gold); margin-top:6px; padding-top:11px; font-size:20px; font-weight:700; color:var(--navy);}
+  .totals-line.total .amt{color:var(--gold-dark);}
+
+  .footer-note{text-align:center; font-size:12px; color:var(--ink-faint); margin-top:26px;}
+
+  /* ---------------- LEYENDA ---------------- */
+  .leyenda-nota{margin-top:22px; padding-top:16px; border-top:1.5px solid var(--border);}
+  .leyenda-nota p{margin:0 0 5px; font-size:11px; line-height:1.5; color:var(--ink-soft); text-align:center; font-weight:600;}
+  .leyenda-nota p:last-child{margin-bottom:0;}
+
+  /* ---------------- FRANJA INFERIOR (sangrado completo) ---------------- */
+  .franja-inferior{
+    background:var(--navy); color:#fff; text-align:center; font-size:12.5px; font-weight:700;
+    letter-spacing:0.3px; padding:14px 20px; margin-top:24px;
+  }
+
+  /* ---------------- ACCIONES DE VENTA (Guardar / Historial) ---------------- */
+  .venta-actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; padding-top:18px; border-top:1.5px solid var(--border);}
+  .btn-accion{
+    flex:1 1 200px; padding:15px 18px; border-radius:11px; font-size:15px; font-weight:700; border:none; cursor:pointer;
+    font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform .1s, opacity .15s;
+  }
+  .btn-accion:active{transform:scale(0.97);}
+  .btn-guardar{background:var(--navy); color:#fff;}
+  .btn-guardar:disabled{opacity:0.55; cursor:default; transform:none;}
+  .btn-historial{background:#fff; color:var(--navy); border:1.5px solid var(--gold);}
+
+  .toast{
+    position:fixed; top:16px; left:50%; transform:translateX(-50%) translateY(-24px); background:var(--navy-dark);
+    color:#fff; padding:13px 22px; border-radius:11px; font-size:14.5px; font-weight:600; box-shadow:0 14px 34px -16px rgba(21,32,64,0.4);
+    z-index:200; opacity:0; pointer-events:none; transition:all .25s; max-width:92vw; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .toast.error{background:#B33A2E;}
+
+  /* ---------------- HISTORIAL DE VENTAS (modal) ---------------- */
+  .hist-overlay{
+    position:fixed; inset:0; background:rgba(12,23,48,0.5); z-index:150; display:none;
+    align-items:flex-start; justify-content:center; padding:24px 14px; overflow-y:auto;
+  }
+  .hist-overlay.open{display:flex;}
+  .hist-panel{background:#fff; border-radius:16px; width:100%; max-width:960px; box-shadow:0 20px 60px rgba(0,0,0,0.28); overflow:hidden; margin-top:10px;}
+  .hist-head{background:var(--navy); color:#fff; padding:18px 24px; display:flex; align-items:center; justify-content:space-between;}
+  .hist-head h2{margin:0; font-size:18px; font-family:'Space Grotesk',sans-serif;}
+  .hist-close{background:rgba(255,255,255,0.15); border:none; color:#fff; width:34px; height:34px; border-radius:9px; font-size:18px; cursor:pointer; font-weight:700;}
+  .hist-body{padding:20px 24px 26px; max-height:72vh; overflow-y:auto;}
+  table.hist-tabla{width:100%; border-collapse:collapse;}
+  table.hist-tabla thead th{text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-soft); border-bottom:2px solid var(--border); padding:9px 10px;}
+  table.hist-tabla thead th.num{text-align:right;}
+  table.hist-tabla tbody td{padding:12px 10px; border-bottom:1px solid var(--border); font-size:14.5px;}
+  table.hist-tabla tbody td.num{text-align:right; font-family:'JetBrains Mono',monospace; font-weight:700;}
+  .hist-vacio{text-align:center; padding:44px 10px; color:var(--ink-faint); font-size:14.5px;}
+  .hist-folio{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy);}
+
+  /* ---------------- BARRA DE NAVEGACIÓN DE MÓDULOS (Clientes / Productos) ---------------- */
+  .mod-nav{max-width:1180px; margin:0 auto 12px; padding:0 14px; display:flex; gap:10px;}
+  .db-status{
+    max-width:1180px; margin:0 auto 14px; padding:0 14px; font-size:11.5px; color:var(--ink-faint);
+    display:flex; align-items:center; gap:5px;
+  }
+  .mod-nav button{
+    background:#fff; border:1.5px solid var(--gold); color:var(--navy); font-weight:700; font-size:13.5px;
+    padding:9px 16px; border-radius:9px; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; gap:6px;
+  }
+  .mod-nav button:active{transform:scale(0.97);}
+
+  /* ---------------- MÓDULOS (Clientes / Productos): listado + formulario ---------------- */
+  .mod-toolbar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;}
+  .mod-toolbar input{flex:1 1 240px; padding:12px 14px; font-size:14.5px; border:1.5px solid var(--border); border-radius:9px; font-family:'Inter',sans-serif;}
+  .mod-toolbar input:focus{outline:none; border-color:var(--navy);}
+  .mod-toolbar .btn-accion{flex:0 0 auto;}
+  table.mod-tabla{width:100%; border-collapse:collapse;}
+  table.mod-tabla thead th{text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-soft); border-bottom:2px solid var(--border); padding:9px 10px;}
+  table.mod-tabla tbody td{padding:11px 10px; border-bottom:1px solid var(--border); font-size:14px; vertical-align:middle;}
+  table.mod-tabla tbody tr:hover{background:var(--bg);}
+  .mod-codigo{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy);}
+  .mod-fila-acciones{display:flex; gap:8px; justify-content:flex-end;}
+  .mod-fila-acciones button{background:none; border:none; font-size:17px; cursor:pointer; padding:4px;}
+  .mod-form-grid{display:grid; grid-template-columns:1fr 1fr; gap:0 20px;}
+  .mod-form-grid .field{grid-column:span 1; margin-bottom:16px;}
+  .mod-form-grid .field.full{grid-column:1 / -1;}
+  @media(max-width:640px){.mod-form-grid{grid-template-columns:1fr;}}
+
+  /* ---------------- CUENTAS POR COBRAR ---------------- */
+  .cxc-resumen{display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:18px;}
+  @media(max-width:640px){.cxc-resumen{grid-template-columns:1fr;}}
+  .cxc-tarjeta{background:var(--bg); border:1.5px solid var(--border); border-radius:11px; padding:14px 16px;}
+  .cxc-tarjeta .cxc-tarjeta-lbl{font-size:10.5px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px;}
+  .cxc-tarjeta .cxc-tarjeta-val{font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:700; color:var(--navy);}
+  .cxc-tarjeta.vencido .cxc-tarjeta-val{color:#B33A2E;}
+  .cxc-tarjeta.cobrado .cxc-tarjeta-val{color:#1E8E4F;}
+  .cxc-filtros{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px;}
+  .cxc-filtros button{
+    padding:8px 14px; font-size:12.5px; font-weight:700; border:1.5px solid var(--border); background:#FBFCFE;
+    color:var(--ink-soft); border-radius:8px; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .cxc-filtros button.active{background:var(--navy); border-color:var(--navy); color:#fff;}
+  .pill-estado{display:inline-block; padding:3px 10px; border-radius:100px; font-size:11.5px; font-weight:700;}
+  .pill-pagada{background:#E4F5EB; color:#1E8E4F;}
+  .pill-pendiente{background:#FFF4DD; color:#966A11;}
+  .pill-vencida{background:#FCE7E5; color:#B33A2E;}
+  .cxc-detalle-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px 20px; margin-bottom:18px;}
+  @media(max-width:640px){.cxc-detalle-grid{grid-template-columns:1fr;}}
+  .cxc-detalle-item .lbl{font-size:11px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:3px;}
+  .cxc-detalle-item .val{font-size:15px; font-weight:700; color:var(--navy);}
+  table.cxc-pagos-tabla{width:100%; border-collapse:collapse; margin-top:8px;}
+  table.cxc-pagos-tabla thead th{text-align:left; font-size:11px; text-transform:uppercase; color:var(--ink-soft); border-bottom:2px solid var(--border); padding:7px 8px;}
+  table.cxc-pagos-tabla tbody td{padding:9px 8px; border-bottom:1px solid var(--border); font-size:13.5px;}
+
+  /* ---------------- DASHBOARD ---------------- */
+  .dash-periodo{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:18px;}
+  .dash-periodo button{
+    padding:9px 16px; font-size:13px; font-weight:700; border:1.5px solid var(--border); background:#FBFCFE;
+    color:var(--ink-soft); border-radius:9px; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .dash-periodo button.active{background:var(--navy); border-color:var(--navy); color:#fff;}
+  .dash-cards{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:20px;}
+  @media(max-width:760px){.dash-cards{grid-template-columns:repeat(2, 1fr);}}
+  @media(max-width:460px){.dash-cards{grid-template-columns:1fr;}}
+  .dash-card{background:var(--bg); border:1.5px solid var(--border); border-radius:11px; padding:13px 15px;}
+  .dash-card .dc-lbl{font-size:10px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px; display:flex; align-items:center; gap:5px;}
+  .dash-card .dc-val{font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:700; color:var(--navy);}
+  .dash-indicadores{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:22px;}
+  @media(max-width:640px){.dash-indicadores{grid-template-columns:1fr;}}
+  .dash-indicador{background:#fff; border:1.5px solid var(--gold); border-radius:11px; padding:14px 16px; text-align:center;}
+  .dash-indicador .di-lbl{font-size:10.5px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px;}
+  .dash-indicador .di-val{font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--gold-dark);}
+  .dash-seccion-titulo{font-size:13px; font-weight:800; color:var(--navy); margin:22px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--gold); text-transform:uppercase; letter-spacing:0.4px;}
+  .dash-grafica-wrap{background:#fff; border:1.5px solid var(--border); border-radius:11px; padding:16px 10px 10px;}
+  .dash-grafica{display:flex; align-items:flex-end; height:170px; gap:4px; overflow-x:auto;}
+  .dash-barra-col{display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; flex:1 0 26px; min-width:26px;}
+  .dash-barra-valor{font-size:8.5px; color:var(--ink-soft); margin-bottom:3px; white-space:nowrap;}
+  .dash-barra{width:68%; background:linear-gradient(180deg, var(--gold), var(--navy)); border-radius:4px 4px 0 0; min-height:2px;}
+  .dash-barra-lbl{font-size:9px; color:var(--ink-faint); margin-top:5px; white-space:nowrap;}
+  .dash-vacio{text-align:center; padding:30px 10px; color:var(--ink-faint); font-size:13.5px;}
+  table.dash-tabla{width:100%; border-collapse:collapse;}
+  table.dash-tabla thead th{text-align:left; font-size:10.5px; text-transform:uppercase; color:var(--ink-soft); border-bottom:2px solid var(--border); padding:8px 9px;}
+  table.dash-tabla tbody td{padding:9px; border-bottom:1px solid var(--border); font-size:13px;}
+
+  /* ---------------- RESPALDO (EXPORTAR / IMPORTAR) ---------------- */
+  .resp-bloque{background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:18px; margin-bottom:18px;}
+  .resp-bloque h3{margin:0 0 6px; font-size:14px; color:var(--navy); font-family:'Space Grotesk',sans-serif;}
+  .resp-bloque p{margin:0 0 14px; font-size:12.5px; color:var(--ink-soft); line-height:1.5;}
+  .resp-conteo{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px;}
+  @media(max-width:640px){.resp-conteo{grid-template-columns:1fr 1fr;}}
+  .resp-conteo .dash-card{padding:10px 12px;}
+  .resp-conteo .dc-val{font-size:15px;}
+  .cxc-acciones-fila{display:flex; gap:5px; flex-wrap:nowrap;}
+  .cxc-btn-accion{
+    border:1.5px solid var(--border); background:#fff; border-radius:7px; padding:6px 8px; font-size:13px;
+    cursor:pointer; font-family:'Inter',sans-serif; line-height:1; white-space:nowrap;
+  }
+  .cxc-btn-accion:active{transform:scale(0.94);}
+  .cxc-btn-accion.whatsapp{border-color:#25D366; background:#EAFBF1;}
+  .cxc-btn-accion.pdf{border-color:var(--navy); background:var(--navy-pale, #E9ECF5);}
+  .cxc-btn-accion.combo{border-color:var(--gold); background:#FBF6EC;}
+
+  /* ---------------- AUTOCOMPLETADO: clientes (Dr./Cliente) y productos (por renglón) ---------------- */
+  .suggest-box{
+    position:absolute; background:#fff; border:1.5px solid var(--gold); border-radius:9px;
+    box-shadow:0 14px 34px -16px rgba(21,32,64,0.4); z-index:300; max-height:230px; overflow-y:auto;
+  }
+  .suggest-item{padding:10px 14px; font-size:13.5px; cursor:pointer; border-bottom:1px solid var(--border); display:flex; gap:8px; align-items:baseline;}
+  .suggest-item:last-child{border-bottom:none;}
+  .suggest-item:hover, .suggest-item:active{background:var(--bg);}
+  .suggest-item .cod{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy); flex-shrink:0;}
+
+
+</style>
+</head>
+<body>
+
+<div class="mod-nav">
+  <button type="button" id="navClientes">👥 Clientes</button>
+  <button type="button" id="navProductos">📦 Productos</button>
+  <button type="button" id="navVentas">🧾 Ventas</button>
+  <button type="button" id="navCxC">💰 CxC</button>
+  <button type="button" id="navDashboard">📊 Dashboard</button>
+  <button type="button" id="navRespaldo">💾 Respaldo</button>
+</div>
+<div id="dbStatusIndicator" class="db-status">Verificando almacenamiento…</div>
+
+<div class="page-wrap">
+  <div class="nota-doc">
+
+    <!-- ENCABEZADO -->
+    <div class="doc-header">
+      <div class="hdr-left">
+        <img class="hdr-logo" id="hdrLogo" alt="GARDENT">
+        <div>
+          <div class="hdr-brand">GARDENT DEPÓSITO DENTAL</div>
+          <div class="hdr-addr">Revolución #324, Col. El Vergel, C.P. 38078, Celaya, Gto.</div>
+          <div class="hdr-contact">Tel. 461 608-0097 · WhatsApp 461 124-9867</div>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <div class="hdr-right-block">
+          <div class="hdr-lbl">Teléfono</div>
+          <div class="hdr-val">461 608-0097</div>
+        </div>
+        <div class="hdr-right-block">
+          <div class="hdr-lbl">WhatsApp</div>
+          <div class="hdr-val">461 124-9867</div>
+        </div>
+        <div class="hdr-folio-line">Folio: <b id="folioDisplay">DG-00001</b></div>
+        <div class="hdr-dt" id="folioFecha">—</div>
+        <div class="hdr-dt" id="folioHora">—</div>
+      </div>
+    </div>
+
+    <div class="nota-inner">
+
+      <!-- DATOS DEL CLIENTE -->
+      <div class="doc-label">
+        <span>Datos del cliente</span>
+        <button type="button" class="link-btn" id="btnBuscarCliente">🔍 Buscar cliente</button>
+      </div>
+
+      <div class="field-row row-numcli">
+        <div class="field"><label for="cliNumCliente">No. Cliente</label><input type="text" id="cliNumCliente" readonly placeholder="Se asigna al guardar"></div>
+        <div class="field" style="position:relative;">
+          <label for="cliNombre">Dr. / Cliente</label>
+          <input type="text" id="cliNombre" placeholder="Nombre" autocomplete="off">
+          <input type="hidden" id="cliSeleccionadoId">
+        </div>
+      </div>
+      <div class="field-row row-full">
+        <div class="field"><label for="cliDireccion">Dirección</label><input type="text" id="cliDireccion" placeholder="Calle, número, colonia"></div>
+      </div>
+      <div class="field-row row-3">
+        <div class="field"><label for="cliCiudad">Ciudad</label><input type="text" id="cliCiudad" placeholder="Ciudad"></div>
+        <div class="field"><label for="cliEstado">Estado</label><input type="text" id="cliEstado" placeholder="Estado"></div>
+        <div class="field"><label for="cliCP">C.P.</label><input type="text" id="cliCP" placeholder="00000" inputmode="numeric"></div>
+      </div>
+      <div class="field-row row-full">
+        <div class="field"><label for="cliTelefono">Teléfono</label><input type="text" id="cliTelefono" placeholder="55 0000 0000" inputmode="tel"></div>
+      </div>
+
+      <!-- VENDEDOR / FORMA DE PAGO / CONDICIONES -->
+      <div class="meta-row">
+        <div class="meta-block">
+          <div class="m-lbl">Vendedor</div>
+          <div class="vendedor-static">CHRISTIAN GOLOP</div>
+        </div>
+        <div class="meta-block">
+          <div class="m-lbl">Forma de pago</div>
+          <div class="seg" id="formaPagoSeg">
+            <button type="button" data-val="Efectivo" class="active">Efectivo</button>
+            <button type="button" data-val="Tarjeta">Tarjeta</button>
+            <button type="button" data-val="Transferencia">Transferencia</button>
+          </div>
+        </div>
+        <div class="meta-block">
+          <div class="m-lbl">Condiciones</div>
+          <div class="seg" id="condicionesSeg">
+            <button type="button" data-val="Contado" class="active">Contado</button>
+            <button type="button" data-val="1 semana">1 semana</button>
+            <button type="button" data-val="15 días">15 días</button>
+            <button type="button" data-val="30 días">30 días</button>
+          </div>
+          <div class="vence-line">Vence: <b id="venceVal">—</b></div>
+        </div>
+      </div>
+
+      <!-- PRODUCTOS -->
+      <div class="doc-label"><span>Productos</span></div>
+      <div class="table-wrap">
+        <table class="products">
+          <thead>
+            <tr>
+              <th class="idx">#</th>
+              <th style="width:110px">Código</th>
+              <th class="num" style="width:74px">Cant.</th>
+              <th>Producto</th>
+              <th class="num" style="width:100px">Precio</th>
+              <th class="num" style="width:110px">Importe</th>
+            </tr>
+          </thead>
+          <tbody id="productBody">
+            <tr>
+              <td class="idx"><span class="idx-num">1</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">2</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">3</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">4</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">5</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">6</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">7</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">8</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">9</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">10</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">11</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">12</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">13</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">14</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">15</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">16</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">17</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">18</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">19</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+            <tr>
+              <td class="idx"><span class="idx-num">20</span></td>
+              <td><input type="text" class="code" placeholder="—"></td>
+              <td><input type="text" class="qty" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0"></td>
+              <td><input type="text" class="prod" placeholder="Escribe para buscar…" autocomplete="off"></td>
+              <td><input type="text" class="price" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="0.00"></td>
+              <td class="importe" data-importe>$0.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ESPACIO RESERVADO PARA TOTALES (sin lógica todavía) -->
+      <div class="totals-wrap">
+        <div class="totals-box">
+          <div class="totals-line"><span>Subtotal</span><span class="amt" id="subtotalVal">$0.00</span></div>
+          <div class="totals-line"><span>Descuentos</span><span class="amt" id="descuentoVal">$0.00</span></div>
+          <div class="totals-line total"><span>Total</span><span class="amt" id="totalVal">$0.00</span></div>
+          <div class="totals-line"><span>Pago recibido</span><span class="amt">—</span></div>
+          <div class="totals-line"><span>Saldo</span><span class="amt">—</span></div>
+        </div>
+      </div>
+
+      <!-- LEYENDA -->
+      <div class="leyenda-nota">
+        <p>HACER QUE TODOS LOS CHEQUES SEAN PAGADEROS A DEPÓSITO DENTAL GARDENT</p>
+        <p>TOTAL A PAGAR EN 30 DÍAS</p>
+        <p>CUOTAS VENCIDAS SUJETAS A UN CARGO DEL 2% MENSUAL.</p>
+      </div>
+
+      <!-- GUARDAR VENTA / VER HISTORIAL / GENERAR PDF -->
+      <div class="venta-actions">
+        <button type="button" class="btn-accion btn-guardar" id="btnGuardarVenta">💾 Guardar venta</button>
+        <button type="button" class="btn-accion btn-historial" id="btnVerHistorial">📋 Ver historial</button>
+        <button type="button" class="btn-accion btn-historial" id="btnGenerarPDF">📄 Generar PDF</button>
+      </div>
+
+    </div>
+
+    <!-- FRANJA INFERIOR (sangrado completo, cierre del documento) -->
+    <div class="franja-inferior">💬 CONTACTO PARA SEGUIMIENTO · WhatsApp: 461 124 9867</div>
+  </div>
+
+  <div class="footer-note">GARDENT DEPÓSITO DENTAL — Nota de venta con folio consecutivo persistente.</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- MÓDULO: RESPALDO (EXPORTAR / IMPORTAR) -->
+<div class="hist-overlay" id="respaldoOverlay">
+  <div class="hist-panel">
+    <div class="hist-head">
+      <h2>💾 Respaldo de datos</h2>
+      <button class="hist-close" id="respaldoClose">✕</button>
+    </div>
+    <div class="hist-body">
+
+      <div class="resp-bloque">
+        <h3>📤 Exportar respaldo</h3>
+        <p>Descarga un archivo .json con todos los datos guardados actualmente: clientes, productos, ventas, folios, cuentas por cobrar y contadores.</p>
+        <button type="button" class="btn-accion btn-guardar" id="btnExportarRespaldo" style="max-width:280px;">📤 Exportar respaldo (.json)</button>
+        <div class="resp-conteo" id="respExportConteo" style="display:none;"></div>
+      </div>
+
+      <div class="resp-bloque">
+        <h3>📥 Importar respaldo</h3>
+        <p>Selecciona un archivo .json exportado previamente. Se te pedirá confirmación antes de escribir cualquier dato, y al finalizar se verificará que todo se haya cargado correctamente.</p>
+        <input type="file" id="respaldoArchivoInput" accept="application/json,.json" style="display:none;">
+        <button type="button" class="btn-accion btn-historial" id="btnImportarRespaldo" style="max-width:280px;">📥 Seleccionar archivo e importar</button>
+        <div class="resp-conteo" id="respImportConteo" style="display:none;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MÓDULO: DASHBOARD -->
+<div class="hist-overlay" id="dashOverlay">
+  <div class="hist-panel">
+    <div class="hist-head">
+      <h2>📊 Dashboard</h2>
+      <button class="hist-close" id="dashClose">✕</button>
+    </div>
+    <div class="hist-body">
+
+      <div class="dash-periodo" id="dashPeriodo">
+        <button type="button" data-periodo="hoy" class="active">Hoy</button>
+        <button type="button" data-periodo="semana">Esta semana</button>
+        <button type="button" data-periodo="mes">Este mes</button>
+        <button type="button" data-periodo="anio">Este año</button>
+      </div>
+
+      <div class="dash-cards">
+        <div class="dash-card"><div class="dc-lbl">💰 Ventas del período</div><div class="dc-val" id="dashCardVentas">$0.00</div></div>
+        <div class="dash-card"><div class="dc-lbl">🧾 Número de ventas</div><div class="dc-val" id="dashCardNumVentas">0</div></div>
+        <div class="dash-card"><div class="dc-lbl">💵 Efectivo</div><div class="dc-val" id="dashCardEfectivo">$0.00</div></div>
+        <div class="dash-card"><div class="dc-lbl">💳 Tarjeta</div><div class="dc-val" id="dashCardTarjeta">$0.00</div></div>
+        <div class="dash-card"><div class="dc-lbl">🏦 Transferencia</div><div class="dc-val" id="dashCardTransferencia">$0.00</div></div>
+        <div class="dash-card"><div class="dc-lbl">📋 Ventas a crédito</div><div class="dc-val" id="dashCardCredito">$0.00</div></div>
+      </div>
+
+      <div class="dash-indicadores">
+        <div class="dash-indicador"><div class="di-lbl">Total vendido</div><div class="di-val" id="dashIndTotal">$0.00</div></div>
+        <div class="dash-indicador"><div class="di-lbl">Número de notas</div><div class="di-val" id="dashIndNotas">0</div></div>
+        <div class="dash-indicador"><div class="di-lbl">Ticket promedio</div><div class="di-val" id="dashIndTicket">$0.00</div></div>
+      </div>
+
+      <div class="dash-seccion-titulo">Ventas del período</div>
+      <div class="dash-grafica-wrap">
+        <div class="dash-grafica" id="dashGrafica"></div>
+        <div class="dash-vacio" id="dashGraficaVacio" style="display:none;">Sin ventas en este período.</div>
+      </div>
+
+      <div class="dash-seccion-titulo">👨‍⚕️ Mejores clientes</div>
+      <table class="dash-tabla">
+        <thead><tr><th>Nombre</th><th style="text-align:right;">Compras</th><th style="text-align:right;">Total comprado</th></tr></thead>
+        <tbody id="dashMejoresClientes"></tbody>
+      </table>
+      <div class="dash-vacio" id="dashClientesVacio" style="display:none;">Sin ventas en este período.</div>
+
+      <div class="dash-seccion-titulo">🦷 Productos más vendidos</div>
+      <table class="dash-tabla">
+        <thead><tr><th>Producto</th><th style="text-align:right;">Cantidad</th><th style="text-align:right;">Importe generado</th></tr></thead>
+        <tbody id="dashMejoresProductos"></tbody>
+      </table>
+      <div class="dash-vacio" id="dashProductosVacio" style="display:none;">Sin ventas en este período.</div>
+
+      <div class="dash-seccion-titulo">💰 Cuentas por cobrar</div>
+      <div class="dash-cards" style="grid-template-columns:repeat(3,1fr);">
+        <div class="dash-card"><div class="dc-lbl">Total pendiente</div><div class="dc-val" id="dashCxcPendiente">$0.00</div></div>
+        <div class="dash-card"><div class="dc-lbl">Total vencido</div><div class="dc-val" id="dashCxcVencido">$0.00</div></div>
+        <div class="dash-card"><div class="dc-lbl">Total por vencer</div><div class="dc-val" id="dashCxcPorVencer">$0.00</div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MÓDULO: CUENTAS POR COBRAR -->
+<div class="hist-overlay" id="cxcOverlay">
+  <div class="hist-panel">
+    <div class="hist-head">
+      <h2>💰 Cuentas por cobrar</h2>
+      <button class="hist-close" id="cxcClose">✕</button>
+    </div>
+    <div class="hist-body">
+
+      <div id="cxcVistaLista">
+        <div class="cxc-resumen">
+          <div class="cxc-tarjeta">
+            <div class="cxc-tarjeta-lbl">Total por cobrar</div>
+            <div class="cxc-tarjeta-val" id="cxcTotalPorCobrar">$0.00</div>
+          </div>
+          <div class="cxc-tarjeta vencido">
+            <div class="cxc-tarjeta-lbl">Total vencido</div>
+            <div class="cxc-tarjeta-val" id="cxcTotalVencido">$0.00</div>
+          </div>
+          <div class="cxc-tarjeta cobrado">
+            <div class="cxc-tarjeta-lbl">Total cobrado</div>
+            <div class="cxc-tarjeta-val" id="cxcTotalCobrado">$0.00</div>
+          </div>
+        </div>
+
+        <div class="cxc-filtros" id="cxcFiltros">
+          <button type="button" data-filtro="todas" class="active">Todas</button>
+          <button type="button" data-filtro="pendientes">Pendientes</button>
+          <button type="button" data-filtro="vencidas">Vencidas</button>
+          <button type="button" data-filtro="pagadas">Pagadas</button>
+        </div>
+
+        <div class="mod-toolbar">
+          <input type="text" id="cxcBuscar" placeholder="Buscar por Dr./Cliente o folio…">
+        </div>
+
+        <table class="mod-tabla">
+          <thead><tr><th>Folio</th><th>Cliente</th><th>Fecha</th><th>Vencimiento</th><th style="text-align:right;">Total</th><th style="text-align:right;">Pagado</th><th style="text-align:right;">Saldo</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="cxcBody"></tbody>
+        </table>
+        <div id="cxcVacio" class="hist-vacio" style="display:none;">No hay cuentas por cobrar registradas todavía.</div>
+      </div>
+
+      <div id="cxcVistaDetalle" style="display:none;">
+        <input type="hidden" id="cxcDetalleFolioActual">
+        <div class="cxc-detalle-grid">
+          <div class="cxc-detalle-item"><div class="lbl">Folio</div><div class="val" id="cxcDetalleFolio">—</div></div>
+          <div class="cxc-detalle-item"><div class="lbl">Cliente</div><div class="val" id="cxcDetalleCliente">—</div></div>
+          <div class="cxc-detalle-item"><div class="lbl">Fecha de venta</div><div class="val" id="cxcDetalleFecha">—</div></div>
+          <div class="cxc-detalle-item"><div class="lbl">Vencimiento</div><div class="val" id="cxcDetalleVencimiento">—</div></div>
+          <div class="cxc-detalle-item"><div class="lbl">Total</div><div class="val" id="cxcDetalleTotal">—</div></div>
+          <div class="cxc-detalle-item"><div class="lbl">Pagado</div><div class="val" id="cxcDetallePagado">—</div></div>
+          <div class="cxc-detalle-item"><div class="lbl">Saldo</div><div class="val" id="cxcDetalleSaldo">—</div></div>
+          <div class="cxc-detalle-item"><div class="lbl">Estado</div><div class="val" id="cxcDetalleEstado">—</div></div>
+        </div>
+
+        <div class="mod-toolbar" style="align-items:flex-end;">
+          <div class="field" style="flex:1 1 200px; margin:0;">
+            <label for="cxcPagoImporte">Importe recibido</label>
+            <input type="text" id="cxcPagoImporte" inputmode="decimal" placeholder="0.00">
+          </div>
+          <button type="button" class="btn-accion btn-guardar" id="btnRegistrarPago" style="flex:0 0 auto;">💰 Registrar pago</button>
+        </div>
+
+        <div class="doc-label" style="margin-top:18px;"><span>Historial de pagos</span></div>
+        <table class="cxc-pagos-tabla">
+          <thead><tr><th>Fecha</th><th style="text-align:right;">Importe</th><th style="text-align:right;">Saldo restante</th></tr></thead>
+          <tbody id="cxcHistorialPagosBody"></tbody>
+        </table>
+        <div id="cxcSinPagos" class="hist-vacio" style="display:none; padding:20px 10px;">Todavía no se han registrado pagos.</div>
+
+        <div class="venta-actions">
+          <button type="button" class="btn-accion btn-historial" id="btnVolverCxCLista">← Volver al listado</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MÓDULO: CLIENTES -->
+<div class="hist-overlay" id="clientesOverlay">
+  <div class="hist-panel">
+    <div class="hist-head">
+      <h2>👥 Clientes</h2>
+      <button class="hist-close" id="clientesClose">✕</button>
+    </div>
+    <div class="hist-body">
+
+      <div id="clientesVistaLista">
+        <div class="mod-toolbar">
+          <input type="text" id="clientesBuscar" placeholder="Buscar por código o nombre…">
+          <button type="button" class="btn-accion btn-guardar" id="btnNuevoCliente">➕ Nuevo cliente</button>
+        </div>
+        <table class="mod-tabla">
+          <thead><tr><th>Código</th><th>Nombre / Doctor</th><th>Teléfono</th><th>Ciudad</th><th></th></tr></thead>
+          <tbody id="clientesBody"></tbody>
+        </table>
+        <div id="clientesVacio" class="hist-vacio" style="display:none;">Todavía no hay clientes registrados.</div>
+      </div>
+
+      <div id="clientesVistaForm" style="display:none;">
+        <input type="hidden" id="cliFormId">
+        <div class="mod-form-grid">
+          <div class="field"><label for="cliFormCodigo">Código</label><input type="text" id="cliFormCodigo" readonly placeholder="Se asigna al guardar"></div>
+          <div class="field"><label for="cliFormNombre">Nombre / Doctor</label><input type="text" id="cliFormNombre" placeholder="Nombre"></div>
+          <div class="field full"><label for="cliFormDireccion">Dirección</label><input type="text" id="cliFormDireccion" placeholder="Calle, número, colonia"></div>
+          <div class="field"><label for="cliFormCiudad">Ciudad</label><input type="text" id="cliFormCiudad" placeholder="Ciudad"></div>
+          <div class="field"><label for="cliFormEstado">Estado</label><input type="text" id="cliFormEstado" placeholder="Estado"></div>
+          <div class="field"><label for="cliFormCP">Código Postal</label><input type="text" id="cliFormCP" placeholder="00000" inputmode="numeric"></div>
+          <div class="field"><label for="cliFormTelefono">Teléfono</label><input type="text" id="cliFormTelefono" placeholder="55 0000 0000" inputmode="tel"></div>
+          <div class="field"><label for="cliFormCorreo">Correo electrónico</label><input type="email" id="cliFormCorreo" placeholder="correo@ejemplo.com"></div>
+          <div class="field full"><label for="cliFormObs">Observaciones</label><input type="text" id="cliFormObs" placeholder="Notas adicionales"></div>
+        </div>
+        <div class="venta-actions">
+          <button type="button" class="btn-accion btn-historial" id="btnCancelarCliente">Cancelar</button>
+          <button type="button" class="btn-accion btn-guardar" id="btnGuardarCliente">💾 Guardar cliente</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MÓDULO: PRODUCTOS -->
+<div class="hist-overlay" id="productosOverlay">
+  <div class="hist-panel">
+    <div class="hist-head">
+      <h2>📦 Productos</h2>
+      <button class="hist-close" id="productosClose">✕</button>
+    </div>
+    <div class="hist-body">
+
+      <div id="productosVistaLista">
+        <div class="mod-toolbar">
+          <input type="text" id="productosBuscar" placeholder="Buscar por código o nombre…">
+          <button type="button" class="btn-accion btn-guardar" id="btnNuevoProducto">➕ Nuevo producto</button>
+        </div>
+        <table class="mod-tabla">
+          <thead><tr><th>Código</th><th>Nombre</th><th class="num" style="text-align:right;">Precio</th><th class="num" style="text-align:right;">Existencia</th><th></th></tr></thead>
+          <tbody id="productosBody"></tbody>
+        </table>
+        <div id="productosVacio" class="hist-vacio" style="display:none;">Todavía no hay productos registrados.</div>
+      </div>
+
+      <div id="productosVistaForm" style="display:none;">
+        <input type="hidden" id="prodFormId">
+        <div class="mod-form-grid">
+          <div class="field"><label for="prodFormCodigo">Código</label><input type="text" id="prodFormCodigo" readonly placeholder="Se asigna al guardar"></div>
+          <div class="field"><label for="prodFormNombre">Nombre del producto</label><input type="text" id="prodFormNombre" placeholder="Nombre"></div>
+          <div class="field full"><label for="prodFormDescripcion">Descripción</label><input type="text" id="prodFormDescripcion" placeholder="Descripción"></div>
+          <div class="field"><label for="prodFormMarca">Marca</label><input type="text" id="prodFormMarca" placeholder="Marca"></div>
+          <div class="field"><label for="prodFormCategoria">Categoría</label><input type="text" id="prodFormCategoria" placeholder="Categoría"></div>
+          <div class="field"><label for="prodFormPrecio">Precio de venta</label><input type="text" id="prodFormPrecio" inputmode="decimal" placeholder="0.00"></div>
+          <div class="field"><label for="prodFormCosto">Costo / último precio de compra</label><input type="text" id="prodFormCosto" inputmode="decimal" placeholder="0.00"></div>
+          <div class="field"><label for="prodFormExistencia">Existencia / inventario</label><input type="text" id="prodFormExistencia" inputmode="decimal" placeholder="0"></div>
+          <div class="field"><label for="prodFormStockMin">Stock mínimo</label><input type="text" id="prodFormStockMin" inputmode="decimal" placeholder="0"></div>
+          <div class="field"><label for="prodFormUnidad">Unidad de venta</label><input type="text" id="prodFormUnidad" placeholder="Pieza, caja, paquete…"></div>
+          <div class="field full"><label for="prodFormObs">Observaciones</label><input type="text" id="prodFormObs" placeholder="Notas adicionales"></div>
+        </div>
+        <div class="venta-actions">
+          <button type="button" class="btn-accion btn-historial" id="btnCancelarProducto">Cancelar</button>
+          <button type="button" class="btn-accion btn-guardar" id="btnGuardarProducto">💾 Guardar producto</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- HISTORIAL DE VENTAS -->
+<div class="hist-overlay" id="histOverlay">
+  <div class="hist-panel">
+    <div class="hist-head">
+      <h2>📋 Historial de ventas</h2>
+      <button class="hist-close" id="histClose">✕</button>
+    </div>
+    <div class="hist-body">
+      <div class="cxc-filtros" id="histFiltros">
+        <button type="button" data-filtro="todas" class="active">Todas</button>
+        <button type="button" data-filtro="pendientes">Pendientes</button>
+        <button type="button" data-filtro="vencidas">Vencidas</button>
+        <button type="button" data-filtro="pagadas">Pagadas</button>
+      </div>
+      <div class="mod-toolbar">
+        <input type="text" id="histBuscar" placeholder="Buscar por folio, Dr./Cliente o teléfono…">
+      </div>
+      <div class="table-wrap">
+        <table class="hist-tabla">
+          <thead>
+            <tr>
+              <th>Folio</th>
+              <th>Fecha</th>
+              <th>Cliente / Dr.</th>
+              <th class="num">Total</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="histBody"></tbody>
+        </table>
+      </div>
+      <div id="histVacio" class="hist-vacio" style="display:none;">Todavía no hay ventas guardadas.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DETALLE DE VENTA (desde Historial) -->
+<div class="hist-overlay" id="histDetalleOverlay">
+  <div class="hist-panel">
+    <div class="hist-head">
+      <h2>Detalle de la venta</h2>
+      <button class="hist-close" id="histDetalleClose">✕</button>
+    </div>
+    <div class="hist-body">
+      <div class="cxc-detalle-grid">
+        <div class="cxc-detalle-item"><div class="lbl">Folio</div><div class="val" id="hdFolio">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Fecha y hora</div><div class="val" id="hdFechaHora">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Dr. / Cliente</div><div class="val" id="hdCliente">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">No. Cliente</div><div class="val" id="hdNumCliente">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Dirección</div><div class="val" id="hdDireccion">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Ciudad / Estado / C.P.</div><div class="val" id="hdCiudadEstadoCP">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Teléfono</div><div class="val" id="hdTelefono">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Vendedor</div><div class="val" id="hdVendedor">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Forma de pago</div><div class="val" id="hdFormaPago">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Condición de pago</div><div class="val" id="hdCondicion">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Fecha de vencimiento</div><div class="val" id="hdVencimiento">—</div></div>
+        <div class="cxc-detalle-item"><div class="lbl">Estado</div><div class="val" id="hdEstado">—</div></div>
+      </div>
+
+      <div class="doc-label"><span>Productos</span></div>
+      <div class="table-wrap">
+        <table class="hist-tabla">
+          <thead><tr><th>Código</th><th>Producto</th><th class="num">Cant.</th><th class="num">Precio</th><th class="num">Importe</th></tr></thead>
+          <tbody id="hdProductosBody"></tbody>
+        </table>
+      </div>
+
+      <div class="totals-wrap">
+        <div class="totals-box">
+          <div class="totals-line"><span>Subtotal</span><span class="amt" id="hdSubtotal">$0.00</span></div>
+          <div class="totals-line"><span>Descuento</span><span class="amt" id="hdDescuento">$0.00</span></div>
+          <div class="totals-line total"><span>Total</span><span class="amt" id="hdTotal">$0.00</span></div>
+          <div class="totals-line"><span>Pago recibido</span><span class="amt" id="hdPagoRecibido">$0.00</span></div>
+          <div class="totals-line"><span>Saldo</span><span class="amt" id="hdSaldo">$0.00</span></div>
+        </div>
+      </div>
+
+      <div class="venta-actions">
+        <button type="button" class="btn-accion btn-historial" id="btnHdPDF">📄 Generar PDF</button>
+        <button type="button" class="btn-accion btn-historial" id="btnHdWhatsapp">📱 Enviar WhatsApp</button>
+        <button type="button" class="btn-accion btn-historial" id="btnHdImprimir">🖨️ Imprimir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="cliSuggestBox" class="suggest-box" style="display:none;"></div>
+<div id="prodSuggestBox" class="suggest-box" style="display:none;"></div>
+
+<script>
+const NUM_ROWS = 20;
+const $ = (id) => document.getElementById(id);
+const CREDIT_DAYS = {'Contado':0, '1 semana':7, '15 días':15, '30 días':30};
+
+/* Logo real de GARDENT (mismo que la referencia) */
+$('hdrLogo').src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAEsASwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD8rKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAop2M9KQginYBKKKKQBRRRQAUUUUAFFFFABRR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';
+
+/* ---------------- RELOJ ---------------- */
+function tickClock(){
+  const now = new Date();
+  $('folioFecha').textContent = now.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
+  $('folioHora').textContent = now.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+/* ---------------- SEGMENTOS: FORMA DE PAGO / CONDICIONES ---------------- */
+$('formaPagoSeg').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...$('formaPagoSeg').children].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+});
+$('condicionesSeg').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...$('condicionesSeg').children].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateVence(btn.dataset.val);
+});
+function updateVence(condicion){
+  if(condicion === 'Contado'){
+    $('venceVal').textContent = 'Pago de contado';
+    return;
+  }
+  const dias = CREDIT_DAYS[condicion] ?? 0;
+  const vence = new Date();
+  vence.setDate(vence.getDate() + dias);
+  $('venceVal').textContent = vence.toLocaleDateString('es-MX');
+}
+updateVence('Contado');
+
+/* ---------------- BUSCAR CLIENTE (visual por ahora; se conectará en una etapa posterior) ---------------- */
+$('btnBuscarCliente').addEventListener('click', ()=>{
+  alert('La búsqueda de clientes se conectará en una etapa posterior.');
+});
+
+/* ---------------- TABLA DE PRODUCTOS (20 renglones) ----------------
+   Los 20 <tr> con sus <input> YA EXISTEN directamente en el HTML (ver más
+   arriba, dentro de <tbody id="productBody">) — no se crean por JavaScript.
+   Esta parte SOLO agrega comportamiento a los elementos que ya existen.
+
+   IMPORTANTE: el importe de CADA renglón se recalcula siempre desde el
+   valor ACTUAL de cantidad y precio de ESE renglón — nunca queda un valor
+   fijo. calcularImporteDeFila() es la única fuente de verdad, y se llama
+   desde varios eventos (input, keyup, change) sobre CADA campo, además del
+   delegado general, para máxima confiabilidad en Safari/iPad. ---------------- */
+// Convierte a número de forma robusta: quita "$", comas, espacios, etc. — nunca deja
+// que un precio/cantidad con formato de texto (ej. "$1,250.00") rompa el cálculo.
+function parseNumeroSeguro(valor){
+  if(valor === null || valor === undefined) return 0;
+  const limpio = String(valor).replace(/[^0-9.\-]/g, '');
+  const n = parseFloat(limpio);
+  return isNaN(n) ? 0 : n;
+}
+function calcularImporteDeFila(tr){
+  // Si el nombre del producto quedó vacío, el precio de ese renglón tampoco debe quedar
+  // "fantasma" — se limpia para que el importe refleje que ya no hay producto capturado.
+  const prodInput = tr.querySelector('.prod');
+  if(prodInput && prodInput.value.trim() === ''){
+    tr.querySelector('.price').value = '';
+    tr.dataset.productoSeleccionadoId = '';
+  }
+  const qty = parseNumeroSeguro(tr.querySelector('.qty').value);
+  const price = parseNumeroSeguro(tr.querySelector('.price').value);
+  const importe = qty * price;
+  tr.querySelector('[data-importe]').textContent = fmtMoney(importe);
+  return importe;
+}
+function onCambioFila(e){
+  const tr = e.target.closest('tr');
+  if(!tr) return;
+  calcularImporteDeFila(tr);
+  recalcTotals();
+}
+// Delegado general (cubre cualquier fila, cualquier campo relevante)
+['input','keyup','change','blur'].forEach(evt=>{
+  $('productBody').addEventListener(evt, (e)=>{
+    if(!e.target.matches('.qty, .price, .prod')) return;
+    onCambioFila(e);
+  }, evt === 'blur' ? true : false); // blur no burbujea: se captura en fase de captura
+});
+// Refuerzo: listeners directos en cada campo de cada uno de los 20 renglones
+// (independiente de la delegación, por si algún entorno no propaga el evento)
+document.querySelectorAll('#productBody .qty, #productBody .price, #productBody .prod').forEach(input=>{
+  ['input','keyup','change','blur'].forEach(evt=> input.addEventListener(evt, onCambioFila));
+});
+
+/* ---------------- TOTALES: Subtotal = suma de importes; Descuento en $0.00 por ahora; Total = Subtotal - Descuento ---------------- */
+function fmtMoney(n){ return '$' + (Number(n)||0).toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function recalcTotals(){
+  let subtotal = 0;
+  document.querySelectorAll('#productBody tr').forEach(tr=>{
+    const qty = parseNumeroSeguro(tr.querySelector('.qty').value);
+    const price = parseNumeroSeguro(tr.querySelector('.price').value);
+    subtotal += qty * price;
+  });
+  const descuento = 0; // sin lógica de descuentos todavía, según lo solicitado
+  const total = subtotal - descuento;
+  $('subtotalVal').textContent = fmtMoney(subtotal);
+  $('descuentoVal').textContent = fmtMoney(descuento);
+  $('totalVal').textContent = fmtMoney(total);
+}
+recalcTotals();
+
+/* ============================================================
+   PERSISTENCIA LOCAL (IndexedDB) — pensada específicamente para el
+   entorno descrito: archivo HTML LOCAL, abierto repetidamente desde
+   Microsoft Edge en iPad, sin servidor/backend/internet.
+
+   IndexedDB es el almacenamiento nativo del navegador para archivos
+   locales — persiste en disco aunque se cierre Edge por completo y
+   se vuelva a abrir el mismo archivo después. NO se usan variables
+   en memoria como fuente de verdad, ni sessionStorage.
+
+   Base: gardent_pdv_db
+   Tablas: "ventas" (cada venta, con id interno único) y "folio"
+   (un solo registro con el contador consecutivo). ============================================================ */
+const IDB_NAME = 'gardent_pdv_db';
+const IDB_VERSION = 3; // se sube de 2 a 3 SOLO para agregar la tabla nueva de Cuentas por Cobrar.
+                        // "ventas", "folio", "clientes", "productos" y sus contadores (versiones 1 y 2)
+                        // se conservan intactas — ver el "if" de cada una abajo.
+const STORE_VENTAS = 'ventas';
+const STORE_FOLIO = 'folio';
+const STORE_CLIENTES = 'clientes';
+const STORE_PRODUCTOS = 'productos';
+const STORE_CONTADOR_CLIENTES = 'contadorClientes';
+const STORE_CONTADOR_PRODUCTOS = 'contadorProductos';
+const STORE_CXC = 'cxc';
+
+function idbOpen(){
+  return new Promise((resolve, reject)=>{
+    if(!window.indexedDB){ reject(new Error('IndexedDB no disponible en este navegador')); return; }
+    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+    req.onupgradeneeded = (e)=>{
+      const db = e.target.result;
+      // Tablas ya existentes desde etapas anteriores — NO SE TOCAN, solo se preservan:
+      if(!db.objectStoreNames.contains(STORE_VENTAS)){
+        db.createObjectStore(STORE_VENTAS, { keyPath: 'id' }); // id interno único por venta
+      }
+      if(!db.objectStoreNames.contains(STORE_FOLIO)){
+        db.createObjectStore(STORE_FOLIO, { keyPath: 'id' });
+      }
+      if(!db.objectStoreNames.contains(STORE_CLIENTES)){
+        db.createObjectStore(STORE_CLIENTES, { keyPath: 'id' }); // id interno único; el código CG-XXXX es un campo más
+      }
+      if(!db.objectStoreNames.contains(STORE_PRODUCTOS)){
+        db.createObjectStore(STORE_PRODUCTOS, { keyPath: 'id' }); // id interno único; el código PR-XXXXX es un campo más
+      }
+      if(!db.objectStoreNames.contains(STORE_CONTADOR_CLIENTES)){
+        db.createObjectStore(STORE_CONTADOR_CLIENTES, { keyPath: 'id' });
+      }
+      if(!db.objectStoreNames.contains(STORE_CONTADOR_PRODUCTOS)){
+        db.createObjectStore(STORE_CONTADOR_PRODUCTOS, { keyPath: 'id' });
+      }
+      // Tabla NUEVA de esta etapa:
+      if(!db.objectStoreNames.contains(STORE_CXC)){
+        db.createObjectStore(STORE_CXC, { keyPath: 'folio' }); // una cuenta por cada folio de venta
+      }
+    };
+    // CORRECCIÓN: si otra pestaña/copia del PDV quedó abierta con una versión anterior de
+    // la base, el navegador BLOQUEA la apertura (evento "onblocked") hasta que esa otra
+    // pestaña se cierre. Antes esto no se manejaba: la promesa se quedaba esperando para
+    // siempre, sin error visible, y Clientes/Productos se veían "vacíos" indefinidamente
+    // aunque los datos siguieran guardados. Ahora se avisa con claridad en vez de colgarse.
+    req.onblocked = ()=> reject(new Error('La base de datos está en uso por otra pestaña de este PDV. Cierra las demás pestañas/copias abiertas e inténtalo de nuevo.'));
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+function idbDelete(storeName, key){
+  return idbOpen().then(db => new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readwrite');
+    const req = tx.objectStore(storeName).delete(key);
+    req.onsuccess = ()=> resolve(true);
+    req.onerror = ()=> reject(req.error);
+    tx.oncomplete = ()=> db.close();
+  }));
+}
+function idbGetAll(storeName){
+  return idbOpen().then(db => new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).getAll();
+    req.onsuccess = ()=> resolve(req.result || []);
+    req.onerror = ()=> reject(req.error);
+    tx.oncomplete = ()=> db.close();
+  }));
+}
+function idbGet(storeName, key){
+  return idbOpen().then(db => new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).get(key);
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+    tx.oncomplete = ()=> db.close();
+  }));
+}
+function idbPut(storeName, value){
+  return idbOpen().then(db => new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readwrite');
+    const req = tx.objectStore(storeName).put(value);
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+    tx.oncomplete = ()=> db.close();
+  }));
+}
+// Respaldo mínimo en localStorage SOLO si IndexedDB no estuviera disponible en algún
+// entorno excepcional — nunca se usa mientras IndexedDB funcione (que es lo normal en Edge).
+function respaldoLocalStorageDisponible(){
+  try{ return typeof localStorage !== 'undefined'; }catch(e){ return false; }
+}
+
+/* ---------------- TOAST ---------------- */
+let toastTimer;
+function showToast(msg, isError){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!isError);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 3200);
+}
+
+/* ---------------- FOLIO CONSECUTIVO PERSISTENTE ----------------
+   folioCounter = folio que se usará en la PRÓXIMA venta a guardar.
+   Solo avanza (y se persiste) DESPUÉS de guardar una venta con éxito —
+   nunca al abrir, recargar, ni al editar el formulario. ---------------- */
+let folioCounter = 1;
+function folioStr(n){ return 'DG-' + String(n).padStart(5, '0'); }
+
+async function loadFolio(){
+  try{
+    const rec = await idbGet(STORE_FOLIO, 'contador');
+    if(rec && Number.isInteger(rec.valor)){
+      folioCounter = rec.valor;
+    } else {
+      folioCounter = 1;
+      await idbPut(STORE_FOLIO, { id: 'contador', valor: 1 });
+    }
+  }catch(err){
+    // Si IndexedDB fallara al leer, no inventamos un folio nuevo "a ciegas":
+    // avisamos y dejamos 1 como valor seguro, pero el guardado seguirá
+    // intentando escribir en IndexedDB (ver guardarVenta).
+    folioCounter = 1;
+    showToast('No se pudo leer el folio guardado — revisa el almacenamiento del navegador.', true);
+  }
+  $('folioDisplay').textContent = folioStr(folioCounter);
+}
+async function saveFolio(nuevoValor){
+  await idbPut(STORE_FOLIO, { id: 'contador', valor: nuevoValor });
+  folioCounter = nuevoValor;
+  $('folioDisplay').textContent = folioStr(folioCounter);
+}
+
+/* ---------------- GUARDAR VENTA ----------------
+   Bloquea el botón de inmediato (guardando === true) para que toques
+   repetidos y rápidos NUNCA generen más de una venta ni consuman más
+   de un folio — esto se verifica con una prueba real más abajo. ---------------- */
+let guardando = false;
+async function guardarVenta(){
+  if(guardando) return; // segunda pulsación mientras ya se está guardando: se ignora por completo
+  guardando = true;
+  $('btnGuardarVenta').disabled = true;
+  $('btnGuardarVenta').textContent = 'Guardando…';
+
+  try{
+    // 1) Validar cliente
+    const nombreCliente = $('cliNombre').value.trim();
+    if(!nombreCliente){
+      showToast('Captura el nombre del Dr. / Cliente antes de guardar', true);
+      $('cliNombre').focus();
+      return;
+    }
+
+    // 2) Validar productos: al menos uno con cantidad y precio válidos (> 0)
+    const filas = [...document.querySelectorAll('#productBody tr')].map(tr=>({
+      codigo: tr.querySelector('.code').value.trim(),
+      producto: tr.querySelector('.prod').value.trim(),
+      cantidad: Number(tr.querySelector('.qty').value || 0),
+      precio: Number(tr.querySelector('.price').value || 0)
+    })).filter(f => f.producto || f.cantidad || f.precio);
+
+    if(filas.length === 0){
+      showToast('Agrega al menos un producto antes de guardar', true);
+      return;
+    }
+    const filasInvalidas = filas.some(f => f.cantidad <= 0 || f.precio <= 0 || !f.producto);
+    if(filasInvalidas){
+      showToast('Revisa los productos: cada renglón necesita nombre, cantidad y precio válidos (mayores a 0)', true);
+      return;
+    }
+
+    // 3) Calcular importes y total (misma fórmula ya validada: Cantidad × Precio)
+    const productosConImporte = filas.map(f => ({ ...f, importe: f.cantidad * f.precio }));
+    const total = productosConImporte.reduce((s, f) => s + f.importe, 0);
+
+    // 4) Folio: se toma el contador ACTUAL (todavía no consumido)
+    const folioAsignado = folioStr(folioCounter);
+
+    const formaPago = document.querySelector('#formaPagoSeg button.active').dataset.val;
+    const condicion = document.querySelector('#condicionesSeg button.active').dataset.val;
+    const ahora = new Date();
+
+    // 5) Identificador interno único por venta (independiente del folio)
+    const idInterno = (crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2));
+
+    const venta = {
+      id: idInterno,
+      folio: folioAsignado,
+      fechaISO: ahora.toISOString(),
+      fecha: ahora.toLocaleDateString('es-MX'),
+      hora: ahora.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' }),
+      cliente: nombreCliente,
+      direccion: $('cliDireccion').value.trim(),
+      ciudad: $('cliCiudad').value.trim(),
+      estado: $('cliEstado').value.trim(),
+      cp: $('cliCP').value.trim(),
+      telefono: $('cliTelefono').value.trim(),
+      vendedor: 'Christian Golop',
+      formaPago,
+      condicion,
+      productos: productosConImporte,
+      total
+    };
+
+    // 6) Guardar la venta en IndexedDB — se CONFIRMA antes de seguir
+    await idbPut(STORE_VENTAS, venta);
+
+    // 6.5) Registrar automáticamente la cuenta por cobrar correspondiente (módulo nuevo,
+    // no altera nada del flujo de venta; si esto llegara a fallar, no bloquea el guardado).
+    try{ await registrarCuentaPorCobrar(venta); }catch(e){}
+
+    // 7) Solo si la venta se guardó de verdad, se consume el folio y se persiste
+    await saveFolio(folioCounter + 1);
+
+    // 8) Confirmación visual con el folio generado
+    showToast(`Venta guardada correctamente — Folio: ${venta.folio}`);
+
+    // 9) Preparar el PDV para una nueva venta (el folio ya quedó actualizado arriba)
+    resetVenta();
+
+  }catch(err){
+    showToast('No se pudo guardar la venta. Tus datos siguen en el formulario — intenta de nuevo.', true);
+  }finally{
+    guardando = false;
+    $('btnGuardarVenta').disabled = false;
+    $('btnGuardarVenta').textContent = '💾 Guardar venta';
+  }
+}
+
+function resetVenta(){
+  $('cliNombre').value = '';
+  $('cliNumCliente').value = '';
+  $('cliDireccion').value = '';
+  $('cliCiudad').value = '';
+  $('cliEstado').value = '';
+  $('cliCP').value = '';
+  $('cliTelefono').value = '';
+  $('cliSeleccionadoId').value = '';
+
+  [...$('formaPagoSeg').children].forEach(b=>b.classList.toggle('active', b.dataset.val==='Efectivo'));
+  [...$('condicionesSeg').children].forEach(b=>b.classList.toggle('active', b.dataset.val==='Contado'));
+  updateVence('Contado');
+
+  document.querySelectorAll('#productBody tr').forEach(tr=>{
+    tr.querySelector('.code').value = '';
+    tr.querySelector('.prod').value = '';
+    tr.querySelector('.qty').value = '';
+    tr.querySelector('.price').value = '';
+    tr.querySelector('[data-importe]').textContent = '$0.00';
+    tr.dataset.productoSeleccionadoId = '';
+  });
+  recalcTotals();
+}
+
+$('btnGuardarVenta').addEventListener('click', guardarVenta);
+
+/* ---------------- HISTORIAL DE VENTAS ----------------
+   Lee SIEMPRE directamente de IndexedDB (gardent_pdv_db → ventas) al
+   abrir el panel — nunca depende de una lista en memoria — para que
+   refleje exactamente lo que está guardado, incluso si se recargó la
+   página o se cerró y volvió a abrir Edge entre una venta y otra. ---------------- */
+let histFiltroActual = 'todas';
+let histVentasCache = [];    // última lista de ventas renderizada — para que Ver detalle/PDF/WhatsApp respondan al instante
+let histCuentasPorFolio = {}; // cuentas de CxC indexadas por folio (para saber el Estado real de cada venta)
+
+// Reutiliza calcularEstadoCxC() ya existente. Para ventas de Contado (que ya NO generan
+// registro en CxC), se construye un objeto "cuenta" ya pagado, solo para poder calcular
+// su Estado con la MISMA función — no se duplica ninguna lógica de estados.
+function resolverCuentaParaVenta(venta){
+  const real = histCuentasPorFolio[venta.folio];
+  if(real) return real;
+  return {
+    folio: venta.folio, fechaISO: venta.fechaISO, cliente: venta.cliente, telefono: venta.telefono || '',
+    total: venta.total, condicion: venta.condicion, fechaVencimientoISO: venta.fechaISO,
+    pagos: [{ fechaISO: venta.fechaISO, importe: venta.total }], pagado: venta.total, saldo: 0
+  };
+}
+
+async function abrirHistorial(){
+  $('histOverlay').classList.add('open');
+  $('histBuscar').value = '';
+  histFiltroActual = 'todas';
+  [...$('histFiltros').children].forEach(b=>b.classList.toggle('active', b.dataset.filtro === 'todas'));
+  await renderHistorial();
+}
+function cerrarHistorial(){ $('histOverlay').classList.remove('open'); }
+
+async function renderHistorial(){
+  let ventas = [];
+  try{ ventas = await idbGetAll(STORE_VENTAS); }
+  catch(err){ showToast('No se pudo leer el historial de ventas', true); return; }
+
+  let cuentas = [];
+  try{ cuentas = await idbGetAll(STORE_CXC); }catch(err){ cuentas = []; }
+  histCuentasPorFolio = {};
+  cuentas.forEach(c => { histCuentasPorFolio[c.folio] = c; });
+
+  // Sincroniza las cachés que ya usan generarPDFParaCuenta()/enviarWhatsAppCxC() (definidas
+  // para CxC) para poder REUTILIZARLAS tal cual desde el Historial, sin duplicar su lógica,
+  // incluso si el usuario nunca abrió el panel de CxC en esta sesión. Se incluye también
+  // una cuenta "resuelta" (ya pagada) para las ventas de Contado, que no generan registro
+  // real en CxC, para que el PDF/WhatsApp funcionen igual para cualquier venta del historial.
+  cxcVentasPorFolio = {};
+  ventas.forEach(v => { cxcVentasPorFolio[v.folio] = v; });
+  cxcCuentasCache = ventas.map(v => resolverCuentaParaVenta(v));
+
+  ventas.sort((a, b) => new Date(b.fechaISO) - new Date(a.fechaISO));
+  histVentasCache = ventas;
+
+  const filtro = histFiltroActual;
+  const busqueda = ($('histBuscar').value || '').trim().toLowerCase();
+
+  const filtradas = ventas.filter(v=>{
+    const estado = calcularEstadoCxC(resolverCuentaParaVenta(v));
+    if(filtro === 'pendientes' && estado !== 'PENDIENTE') return false;
+    if(filtro === 'vencidas' && estado !== 'VENCIDA') return false;
+    if(filtro === 'pagadas' && estado !== 'PAGADA') return false;
+    if(busqueda){
+      const coincide = v.folio.toLowerCase().includes(busqueda)
+        || (v.cliente||'').toLowerCase().includes(busqueda)
+        || (v.telefono||'').toLowerCase().includes(busqueda);
+      if(!coincide) return false;
+    }
+    return true;
+  });
+
+  if(ventas.length === 0){
+    $('histBody').innerHTML = '';
+    $('histVacio').style.display = 'block';
+    $('histVacio').textContent = 'Todavía no hay ventas guardadas.';
+    return;
+  }
+  if(filtradas.length === 0){
+    $('histBody').innerHTML = '';
+    $('histVacio').style.display = 'block';
+    $('histVacio').textContent = 'Ninguna venta coincide con el filtro/búsqueda.';
+    return;
+  }
+  $('histVacio').style.display = 'none';
+
+  $('histBody').innerHTML = filtradas.map(v=>{
+    const estado = calcularEstadoCxC(resolverCuentaParaVenta(v));
+    return `
+    <tr>
+      <td class="hist-folio">${v.folio}</td>
+      <td>${v.fecha}</td>
+      <td>${v.cliente}</td>
+      <td class="num">${fmtMoney(v.total)}</td>
+      <td>${pillEstadoHtml(estado)}</td>
+      <td>
+        <div class="mod-fila-acciones">
+          <button type="button" title="Ver detalle" data-hist-accion="detalle" data-hist-folio="${v.folio}">👁️</button>
+          <button type="button" title="Generar PDF" data-hist-accion="pdf" data-hist-folio="${v.folio}">📄</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+$('btnVerHistorial').addEventListener('click', abrirHistorial);
+$('navVentas').addEventListener('click', abrirHistorial); // MISMA función — el botón "Ventas" del menú abre el mismo Historial, sin duplicar nada
+$('histClose').addEventListener('click', cerrarHistorial);
+$('histOverlay').addEventListener('click', (e)=>{ if(e.target === $('histOverlay')) cerrarHistorial(); });
+$('histFiltros').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...$('histFiltros').children].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  histFiltroActual = btn.dataset.filtro;
+  renderHistorial();
+});
+$('histBuscar').addEventListener('input', renderHistorial);
+
+/* ---------------- DETALLE DE VENTA (desde Historial) ---------------- */
+let histDetalleFolioActual = null;
+
+function abrirDetalleHistorial(folio){
+  const venta = histVentasCache.find(v => v.folio === folio);
+  if(!venta){ showToast('No se encontró esta venta', true); return; }
+  const cuenta = resolverCuentaParaVenta(venta);
+  const estado = calcularEstadoCxC(cuenta);
+  histDetalleFolioActual = folio;
+
+  $('hdFolio').textContent = venta.folio;
+  $('hdFechaHora').textContent = `${venta.fecha}  ${venta.hora || ''}`;
+  $('hdCliente').textContent = venta.cliente;
+  $('hdNumCliente').textContent = venta.numCliente || '—';
+  $('hdDireccion').textContent = venta.direccion || '—';
+  $('hdCiudadEstadoCP').textContent = `${venta.ciudad || '—'} / ${venta.estado || '—'} / ${venta.cp || '—'}`;
+  $('hdTelefono').textContent = venta.telefono || '—';
+  $('hdVendedor').textContent = venta.vendedor || '—';
+  $('hdFormaPago').textContent = venta.formaPago || '—';
+  $('hdCondicion').textContent = venta.condicion || '—';
+  $('hdVencimiento').textContent = venta.condicion === 'Contado' ? 'Pago de contado' : new Date(cuenta.fechaVencimientoISO).toLocaleDateString('es-MX');
+  $('hdEstado').innerHTML = pillEstadoHtml(estado);
+
+  $('hdProductosBody').innerHTML = (venta.productos || []).map(p => `
+    <tr><td>${p.codigo || '—'}</td><td>${p.producto}</td><td class="num">${p.cantidad}</td><td class="num">${fmtMoney(p.precio)}</td><td class="num">${fmtMoney(p.importe)}</td></tr>
+  `).join('');
+
+  $('hdSubtotal').textContent = fmtMoney(venta.total);
+  $('hdDescuento').textContent = fmtMoney(0);
+  $('hdTotal').textContent = fmtMoney(venta.total);
+  $('hdPagoRecibido').textContent = fmtMoney(cuenta.pagado || 0);
+  $('hdSaldo').textContent = fmtMoney(cuenta.saldo || 0);
+
+  $('histDetalleOverlay').classList.add('open');
+}
+function cerrarDetalleHistorial(){ $('histDetalleOverlay').classList.remove('open'); }
+
+$('histBody').addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-hist-accion]');
+  if(!btn) return;
+  const folio = btn.dataset.histFolio;
+  if(btn.dataset.histAccion === 'detalle') abrirDetalleHistorial(folio);
+  else if(btn.dataset.histAccion === 'pdf') generarPDFParaCuenta(folio); // MISMA función ya usada en CxC — no se duplica
+});
+$('histDetalleClose').addEventListener('click', cerrarDetalleHistorial);
+$('histDetalleOverlay').addEventListener('click', (e)=>{ if(e.target === $('histDetalleOverlay')) cerrarDetalleHistorial(); });
+
+// Los 3 botones del detalle REUTILIZAN exactamente las mismas funciones ya construidas
+// para Cuentas por Cobrar — no se crea ninguna lógica nueva de PDF ni de WhatsApp.
+$('btnHdPDF').addEventListener('click', ()=> generarPDFParaCuenta(histDetalleFolioActual));
+$('btnHdWhatsapp').addEventListener('click', ()=> enviarWhatsAppCxC(histDetalleFolioActual));
+$('btnHdImprimir').addEventListener('click', async ()=>{
+  // "Imprimir" reutiliza el mismo PDF ya generado y lo abre en una pestaña nueva —
+  // desde ahí el propio Edge/iPad ofrece la opción de imprimir. No se crea una segunda
+  // lógica de generación de documento.
+  const venta = histVentasCache.find(v => v.folio === histDetalleFolioActual);
+  if(!venta) return;
+  const cuenta = resolverCuentaParaVenta(venta);
+  showToast('Generando PDF para imprimir…');
+  const blob = await generarPDFBlobParaVenta(venta, cuenta);
+  if(!blob){ showToast('No se pudo generar el PDF', true); return; }
+  const url = URL.createObjectURL(blob);
+  const ventana = window.open(url, '_blank');
+  if(!ventana){ showToast('Tu navegador bloqueó la ventana. Ábrela manualmente para imprimir.', true); }
+});
+
+/* ---------------- INICIALIZACIÓN ---------------- */
+(async function initVentas(){
+  await loadFolio(); // SOLO lee/crea el contador — nunca lo incrementa aquí
+})();
+
+/* ============================================================
+   MÓDULO: CLIENTES — código automático CG-0001, CG-0002...
+   Mismo patrón ya probado para el folio de ventas: el contador
+   SOLO avanza y se persiste DESPUÉS de guardar un cliente nuevo
+   con éxito. Editar un cliente existente NUNCA toca el contador.
+   ============================================================ */
+let clienteCounter = 1;
+function clienteCodigoStr(n){ return 'CG-' + String(n).padStart(4, '0'); }
+
+async function loadClienteCounter(){
+  try{
+    const rec = await idbGet(STORE_CONTADOR_CLIENTES, 'contador');
+    if(rec && Number.isInteger(rec.valor)){ clienteCounter = rec.valor; }
+    else { clienteCounter = 1; await idbPut(STORE_CONTADOR_CLIENTES, { id:'contador', valor:1 }); }
+  }catch(err){ clienteCounter = 1; }
+}
+async function saveClienteCounter(nuevoValor){
+  await idbPut(STORE_CONTADOR_CLIENTES, { id:'contador', valor: nuevoValor });
+  clienteCounter = nuevoValor;
+}
+
+let guardandoCliente = false;
+async function guardarCliente(){
+  if(guardandoCliente) return; // anti-doble-clic, mismo patrón que guardarVenta()
+  guardandoCliente = true;
+  $('btnGuardarCliente').disabled = true;
+  $('btnGuardarCliente').textContent = 'Guardando…';
+
+  try{
+    const nombre = $('cliFormNombre').value.trim();
+    if(!nombre){
+      showToast('Captura el nombre del cliente antes de guardar', true);
+      $('cliFormNombre').focus();
+      return;
+    }
+
+    const idExistente = $('cliFormId').value; // vacío = cliente nuevo; con valor = edición
+    const datosCliente = {
+      nombre,
+      direccion: $('cliFormDireccion').value.trim(),
+      ciudad: $('cliFormCiudad').value.trim(),
+      estado: $('cliFormEstado').value.trim(),
+      cp: $('cliFormCP').value.trim(),
+      telefono: $('cliFormTelefono').value.trim(),
+      correo: $('cliFormCorreo').value.trim(),
+      observaciones: $('cliFormObs').value.trim()
+    };
+
+    if(idExistente){
+      // EDICIÓN: se conserva el mismo id y el mismo código — el contador NO se toca
+      const registroPrevio = await idbGet(STORE_CLIENTES, idExistente);
+      const actualizado = { ...registroPrevio, ...datosCliente, id: idExistente, codigo: registroPrevio.codigo };
+      await idbPut(STORE_CLIENTES, actualizado);
+      // VERIFICACIÓN: se relee el mismo registro para confirmar que realmente quedó
+      // guardado antes de avisar éxito — si por cualquier motivo no se pudo confirmar,
+      // se avisa con claridad en vez de mostrar un mensaje de éxito optimista.
+      const verificado = await idbGet(STORE_CLIENTES, idExistente);
+      if(!verificado || verificado.nombre !== actualizado.nombre){
+        showToast('El cliente no se pudo confirmar como guardado. Intenta de nuevo.', true);
+        return;
+      }
+      showToast(`Cliente ${actualizado.codigo} actualizado correctamente`);
+    } else {
+      // NUEVO: se asigna el código actual del contador y SOLO si el guardado
+      // se confirma, se avanza y persiste el contador — igual que en folios.
+      const codigoAsignado = clienteCodigoStr(clienteCounter);
+      const idInterno = (crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2));
+      const nuevoCliente = { id: idInterno, codigo: codigoAsignado, ...datosCliente };
+      await idbPut(STORE_CLIENTES, nuevoCliente);
+      // VERIFICACIÓN: se relee el registro recién creado antes de avanzar el contador
+      // y de avisar éxito — así nunca se consume un código para un guardado que en
+      // realidad no se confirmó.
+      const verificado = await idbGet(STORE_CLIENTES, idInterno);
+      if(!verificado){
+        showToast('El cliente no se pudo confirmar como guardado. Intenta de nuevo.', true);
+        return;
+      }
+      await saveClienteCounter(clienteCounter + 1);
+      showToast(`Cliente guardado correctamente — Código: ${codigoAsignado}`);
+    }
+
+    cerrarFormClientes();
+    await renderClientes();
+    await refrescarClientesCache();
+
+  }catch(err){
+    showToast('No se pudo guardar el cliente. Intenta de nuevo.', true);
+  }finally{
+    guardandoCliente = false;
+    $('btnGuardarCliente').disabled = false;
+    $('btnGuardarCliente').textContent = '💾 Guardar cliente';
+  }
+}
+
+function limpiarFormCliente(){
+  $('cliFormId').value = '';
+  $('cliFormCodigo').value = '';
+  $('cliFormNombre').value = '';
+  $('cliFormDireccion').value = '';
+  $('cliFormCiudad').value = '';
+  $('cliFormEstado').value = '';
+  $('cliFormCP').value = '';
+  $('cliFormTelefono').value = '';
+  $('cliFormCorreo').value = '';
+  $('cliFormObs').value = '';
+}
+function abrirFormClientes(cliente){
+  limpiarFormCliente();
+  if(cliente){
+    $('cliFormId').value = cliente.id;
+    $('cliFormCodigo').value = cliente.codigo;
+    $('cliFormNombre').value = cliente.nombre || '';
+    $('cliFormDireccion').value = cliente.direccion || '';
+    $('cliFormCiudad').value = cliente.ciudad || '';
+    $('cliFormEstado').value = cliente.estado || '';
+    $('cliFormCP').value = cliente.cp || '';
+    $('cliFormTelefono').value = cliente.telefono || '';
+    $('cliFormCorreo').value = cliente.correo || '';
+    $('cliFormObs').value = cliente.observaciones || '';
+  } else {
+    $('cliFormCodigo').value = clienteCodigoStr(clienteCounter);
+  }
+  $('clientesVistaLista').style.display = 'none';
+  $('clientesVistaForm').style.display = 'block';
+}
+function cerrarFormClientes(){
+  $('clientesVistaForm').style.display = 'none';
+  $('clientesVistaLista').style.display = 'block';
+}
+
+async function eliminarCliente(id, codigo){
+  const confirmado = confirm(`¿Eliminar al cliente ${codigo}? Esta acción no se puede deshacer.\n\nLas ventas ya guardadas con este cliente conservarán sus datos tal como se capturaron — no se modifican.`);
+  if(!confirmado) return;
+  try{
+    await idbDelete(STORE_CLIENTES, id);
+    showToast(`Cliente ${codigo} eliminado`);
+    await renderClientes();
+    await refrescarClientesCache();
+  }catch(err){
+    showToast('No se pudo eliminar el cliente', true);
+  }
+}
+
+async function renderClientes(filtro){
+  let clientes = [];
+  try{ clientes = await idbGetAll(STORE_CLIENTES); }
+  catch(err){ showToast('No se pudo leer la lista de clientes: ' + ((err && err.message) || err), true); return; }
+
+  clientes.sort((a,b)=> a.codigo.localeCompare(b.codigo));
+
+  const f = (filtro || '').trim().toLowerCase();
+  const filtrados = f
+    ? clientes.filter(c => c.codigo.toLowerCase().includes(f) || (c.nombre||'').toLowerCase().includes(f))
+    : clientes;
+
+  const body = $('clientesBody');
+  if(filtrados.length === 0){
+    body.innerHTML = '';
+    $('clientesVacio').style.display = 'block';
+    $('clientesVacio').textContent = clientes.length === 0 ? 'Todavía no hay clientes registrados.' : 'Ningún cliente coincide con la búsqueda.';
+    return;
+  }
+  $('clientesVacio').style.display = 'none';
+  body.innerHTML = filtrados.map(c => `
+    <tr>
+      <td class="mod-codigo">${c.codigo}</td>
+      <td>${c.nombre}</td>
+      <td>${c.telefono || '—'}</td>
+      <td>${c.ciudad || '—'}</td>
+      <td>
+        <div class="mod-fila-acciones">
+          <button type="button" title="Editar" data-editar-cliente="${c.id}">✏️</button>
+          <button type="button" title="Eliminar" data-eliminar-cliente="${c.id}" data-codigo="${c.codigo}">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function abrirClientes(){
+  cerrarFormClientes();
+  $('clientesBuscar').value = '';
+  $('clientesOverlay').classList.add('open');
+  await renderClientes();
+}
+function cerrarClientes(){ $('clientesOverlay').classList.remove('open'); }
+
+$('navClientes').addEventListener('click', abrirClientes);
+$('clientesClose').addEventListener('click', cerrarClientes);
+$('clientesOverlay').addEventListener('click', (e)=>{ if(e.target === $('clientesOverlay')) cerrarClientes(); });
+$('btnNuevoCliente').addEventListener('click', ()=> abrirFormClientes(null));
+$('btnCancelarCliente').addEventListener('click', cerrarFormClientes);
+$('btnGuardarCliente').addEventListener('click', guardarCliente);
+$('clientesBuscar').addEventListener('input', (e)=> renderClientes(e.target.value));
+$('clientesBody').addEventListener('click', async (e)=>{
+  const btnEditar = e.target.closest('[data-editar-cliente]');
+  if(btnEditar){
+    const cliente = await idbGet(STORE_CLIENTES, btnEditar.dataset.editarCliente);
+    if(cliente) abrirFormClientes(cliente);
+    return;
+  }
+  const btnEliminar = e.target.closest('[data-eliminar-cliente]');
+  if(btnEliminar){
+    eliminarCliente(btnEliminar.dataset.eliminarCliente, btnEliminar.dataset.codigo);
+  }
+});
+
+/* ============================================================
+   MÓDULO: PRODUCTOS — código automático PR-00001, PR-00002...
+   Mismo patrón exacto que Clientes y que el folio de ventas.
+   ============================================================ */
+let productoCounter = 1;
+function productoCodigoStr(n){ return 'PR-' + String(n).padStart(5, '0'); }
+
+async function loadProductoCounter(){
+  try{
+    const rec = await idbGet(STORE_CONTADOR_PRODUCTOS, 'contador');
+    if(rec && Number.isInteger(rec.valor)){ productoCounter = rec.valor; }
+    else { productoCounter = 1; await idbPut(STORE_CONTADOR_PRODUCTOS, { id:'contador', valor:1 }); }
+  }catch(err){ productoCounter = 1; }
+}
+async function saveProductoCounter(nuevoValor){
+  await idbPut(STORE_CONTADOR_PRODUCTOS, { id:'contador', valor: nuevoValor });
+  productoCounter = nuevoValor;
+}
+
+let guardandoProducto = false;
+async function guardarProducto(){
+  if(guardandoProducto) return; // anti-doble-clic
+  guardandoProducto = true;
+  $('btnGuardarProducto').disabled = true;
+  $('btnGuardarProducto').textContent = 'Guardando…';
+
+  try{
+    const nombre = $('prodFormNombre').value.trim();
+    if(!nombre){
+      showToast('Captura el nombre del producto antes de guardar', true);
+      $('prodFormNombre').focus();
+      return;
+    }
+
+    const idExistente = $('prodFormId').value;
+    const datosProducto = {
+      nombre,
+      descripcion: $('prodFormDescripcion').value.trim(),
+      marca: $('prodFormMarca').value.trim(),
+      categoria: $('prodFormCategoria').value.trim(),
+      precio: Number($('prodFormPrecio').value || 0),
+      costo: Number($('prodFormCosto').value || 0),
+      existencia: Number($('prodFormExistencia').value || 0),
+      stockMinimo: Number($('prodFormStockMin').value || 0),
+      unidad: $('prodFormUnidad').value.trim(),
+      observaciones: $('prodFormObs').value.trim()
+    };
+
+    if(idExistente){
+      const registroPrevio = await idbGet(STORE_PRODUCTOS, idExistente);
+      const actualizado = { ...registroPrevio, ...datosProducto, id: idExistente, codigo: registroPrevio.codigo };
+      await idbPut(STORE_PRODUCTOS, actualizado);
+      // VERIFICACIÓN: se relee el mismo registro para confirmar que realmente quedó
+      // guardado antes de avisar éxito.
+      const verificado = await idbGet(STORE_PRODUCTOS, idExistente);
+      if(!verificado || verificado.nombre !== actualizado.nombre){
+        showToast('El producto no se pudo confirmar como guardado. Intenta de nuevo.', true);
+        return;
+      }
+      showToast(`Producto ${actualizado.codigo} actualizado correctamente`);
+    } else {
+      const codigoAsignado = productoCodigoStr(productoCounter);
+      const idInterno = (crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2));
+      const nuevoProducto = { id: idInterno, codigo: codigoAsignado, ...datosProducto };
+      await idbPut(STORE_PRODUCTOS, nuevoProducto);
+      // VERIFICACIÓN: se relee el registro recién creado antes de avanzar el contador
+      // y de avisar éxito.
+      const verificado = await idbGet(STORE_PRODUCTOS, idInterno);
+      if(!verificado){
+        showToast('El producto no se pudo confirmar como guardado. Intenta de nuevo.', true);
+        return;
+      }
+      await saveProductoCounter(productoCounter + 1);
+      showToast(`Producto guardado correctamente — Código: ${codigoAsignado}`);
+    }
+
+    cerrarFormProductos();
+    await renderProductos();
+    await refrescarProductosCache();
+
+  }catch(err){
+    showToast('No se pudo guardar el producto. Intenta de nuevo.', true);
+  }finally{
+    guardandoProducto = false;
+    $('btnGuardarProducto').disabled = false;
+    $('btnGuardarProducto').textContent = '💾 Guardar producto';
+  }
+}
+
+function limpiarFormProducto(){
+  $('prodFormId').value = '';
+  $('prodFormCodigo').value = '';
+  $('prodFormNombre').value = '';
+  $('prodFormDescripcion').value = '';
+  $('prodFormMarca').value = '';
+  $('prodFormCategoria').value = '';
+  $('prodFormPrecio').value = '';
+  $('prodFormCosto').value = '';
+  $('prodFormExistencia').value = '';
+  $('prodFormStockMin').value = '';
+  $('prodFormUnidad').value = '';
+  $('prodFormObs').value = '';
+}
+function abrirFormProductos(producto){
+  limpiarFormProducto();
+  if(producto){
+    $('prodFormId').value = producto.id;
+    $('prodFormCodigo').value = producto.codigo;
+    $('prodFormNombre').value = producto.nombre || '';
+    $('prodFormDescripcion').value = producto.descripcion || '';
+    $('prodFormMarca').value = producto.marca || '';
+    $('prodFormCategoria').value = producto.categoria || '';
+    $('prodFormPrecio').value = producto.precio || '';
+    $('prodFormCosto').value = producto.costo || '';
+    $('prodFormExistencia').value = producto.existencia || '';
+    $('prodFormStockMin').value = producto.stockMinimo || '';
+    $('prodFormUnidad').value = producto.unidad || '';
+    $('prodFormObs').value = producto.observaciones || '';
+  } else {
+    $('prodFormCodigo').value = productoCodigoStr(productoCounter);
+  }
+  $('productosVistaLista').style.display = 'none';
+  $('productosVistaForm').style.display = 'block';
+}
+function cerrarFormProductos(){
+  $('productosVistaForm').style.display = 'none';
+  $('productosVistaLista').style.display = 'block';
+}
+
+async function eliminarProducto(id, codigo){
+  const confirmado = confirm(`¿Eliminar el producto ${codigo}? Esta acción no se puede deshacer.`);
+  if(!confirmado) return;
+  try{
+    await idbDelete(STORE_PRODUCTOS, id);
+    showToast(`Producto ${codigo} eliminado`);
+    await renderProductos();
+    await refrescarProductosCache();
+  }catch(err){
+    showToast('No se pudo eliminar el producto', true);
+  }
+}
+
+async function renderProductos(filtro){
+  let productos = [];
+  try{ productos = await idbGetAll(STORE_PRODUCTOS); }
+  catch(err){ showToast('No se pudo leer la lista de productos: ' + ((err && err.message) || err), true); return; }
+
+  productos.sort((a,b)=> a.codigo.localeCompare(b.codigo));
+
+  const f = (filtro || '').trim().toLowerCase();
+  const filtrados = f
+    ? productos.filter(p => p.codigo.toLowerCase().includes(f) || (p.nombre||'').toLowerCase().includes(f))
+    : productos;
+
+  const body = $('productosBody');
+  if(filtrados.length === 0){
+    body.innerHTML = '';
+    $('productosVacio').style.display = 'block';
+    $('productosVacio').textContent = productos.length === 0 ? 'Todavía no hay productos registrados.' : 'Ningún producto coincide con la búsqueda.';
+    return;
+  }
+  $('productosVacio').style.display = 'none';
+  body.innerHTML = filtrados.map(p => `
+    <tr>
+      <td class="mod-codigo">${p.codigo}</td>
+      <td>${p.nombre}</td>
+      <td class="num" style="text-align:right; font-family:'JetBrains Mono',monospace;">${fmtMoney(p.precio)}</td>
+      <td class="num" style="text-align:right; font-family:'JetBrains Mono',monospace;">${p.existencia ?? 0}</td>
+      <td>
+        <div class="mod-fila-acciones">
+          <button type="button" title="Editar" data-editar-producto="${p.id}">✏️</button>
+          <button type="button" title="Eliminar" data-eliminar-producto="${p.id}" data-codigo="${p.codigo}">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function abrirProductos(){
+  cerrarFormProductos();
+  $('productosBuscar').value = '';
+  $('productosOverlay').classList.add('open');
+  await renderProductos();
+}
+function cerrarProductos(){ $('productosOverlay').classList.remove('open'); }
+
+$('navProductos').addEventListener('click', abrirProductos);
+$('productosClose').addEventListener('click', cerrarProductos);
+$('productosOverlay').addEventListener('click', (e)=>{ if(e.target === $('productosOverlay')) cerrarProductos(); });
+$('btnNuevoProducto').addEventListener('click', ()=> abrirFormProductos(null));
+$('btnCancelarProducto').addEventListener('click', cerrarFormProductos);
+$('btnGuardarProducto').addEventListener('click', guardarProducto);
+$('productosBuscar').addEventListener('input', (e)=> renderProductos(e.target.value));
+$('productosBody').addEventListener('click', async (e)=>{
+  const btnEditar = e.target.closest('[data-editar-producto]');
+  if(btnEditar){
+    const producto = await idbGet(STORE_PRODUCTOS, btnEditar.dataset.editarProducto);
+    if(producto) abrirFormProductos(producto);
+    return;
+  }
+  const btnEliminar = e.target.closest('[data-eliminar-producto]');
+  if(btnEliminar){
+    eliminarProducto(btnEliminar.dataset.eliminarProducto, btnEliminar.dataset.codigo);
+  }
+});
+
+/* ---------------- INICIALIZACIÓN DE CONTADORES DE CLIENTES/PRODUCTOS ---------------- */
+(async function initClientesProductos(){
+  await loadClienteCounter();
+  await loadProductoCounter();
+  await refrescarClientesCache();
+  await refrescarProductosCache();
+})();
+
+/* ============================================================
+   AUTOCOMPLETADO — Dr./Cliente y Producto (por renglón).
+   Usa una caché en memoria de clientes/productos (se recarga al iniciar
+   y cada vez que se guarda/elimina uno) para responder al instante en
+   cada tecla, sin consultar IndexedDB en cada pulsación. La búsqueda es
+   por PREFIJO (el nombre empieza con lo escrito), sin distinguir
+   mayúsculas/minúsculas, tal como se pidió. ============================================================ */
+let clientesCache = [];
+let productosCache = [];
+async function refrescarClientesCache(){
+  try{ clientesCache = await idbGetAll(STORE_CLIENTES); }catch(err){ clientesCache = []; }
+  actualizarIndicadorAlmacenamiento();
+}
+async function refrescarProductosCache(){
+  try{ productosCache = await idbGetAll(STORE_PRODUCTOS); }catch(err){ productosCache = []; }
+  actualizarIndicadorAlmacenamiento();
+}
+
+// VERIFICACIÓN VISIBLE Y PERMANENTE (no un aviso que desaparece): muestra en todo momento,
+// de forma puramente informativa y de SOLO LECTURA, cuántos clientes/productos/ventas
+// existen REALMENTE en IndexedDB en este dispositivo/archivo en este momento. Nunca
+// escribe, nunca reemplaza, nunca inicializa nada — solo cuenta lo que ya está guardado.
+async function actualizarIndicadorAlmacenamiento(){
+  try{
+    const [clientes, productos, ventas] = await Promise.all([
+      idbGetAll(STORE_CLIENTES), idbGetAll(STORE_PRODUCTOS), idbGetAll(STORE_VENTAS)
+    ]);
+    $('dbStatusIndicator').textContent =
+      `🗄️ En este almacenamiento hay guardados ahora mismo: ${clientes.length} cliente(s) · ${productos.length} producto(s) · ${ventas.length} venta(s)`;
+  }catch(err){
+    $('dbStatusIndicator').textContent = '⚠️ No se pudo leer el estado del almacenamiento.';
+  }
+}
+
+function posicionarSuggestBox(box, inputEl){
+  const r = inputEl.getBoundingClientRect();
+  box.style.left = (r.left + window.scrollX) + 'px';
+  box.style.top = (r.bottom + window.scrollY + 4) + 'px';
+  box.style.width = Math.max(r.width, 240) + 'px';
+}
+function ocultarSuggest(box){ box.style.display = 'none'; box.innerHTML = ''; }
+
+/* ---- Autocompletado de CLIENTES en "Dr. / Cliente" ---- */
+$('cliNombre').addEventListener('input', ()=>{
+  const q = $('cliNombre').value.trim().toLowerCase();
+  $('cliSeleccionadoId').value = ''; // escribir manualmente invalida cualquier selección previa
+  const box = $('cliSuggestBox');
+  if(!q){ ocultarSuggest(box); return; }
+  const coincidencias = clientesCache
+    .filter(c => (c.nombre || '').toLowerCase().startsWith(q))
+    .slice(0, 8);
+  if(coincidencias.length === 0){ ocultarSuggest(box); return; }
+  box.innerHTML = coincidencias.map(c =>
+    `<div class="suggest-item" data-cliente-id="${c.id}"><span class="cod">${c.codigo}</span><span>${c.nombre}</span></div>`
+  ).join('');
+  posicionarSuggestBox(box, $('cliNombre'));
+  box.style.display = 'block';
+});
+$('cliSuggestBox').addEventListener('mousedown', (e)=>{
+  // mousedown (no click) para que se dispare ANTES de que el input pierda el foco
+  const item = e.target.closest('[data-cliente-id]');
+  if(!item) return;
+  const c = clientesCache.find(x => x.id === item.dataset.clienteId);
+  if(!c) return;
+  $('cliNombre').value = c.nombre;
+  $('cliDireccion').value = c.direccion || '';
+  $('cliCiudad').value = c.ciudad || '';
+  $('cliEstado').value = c.estado || '';
+  $('cliCP').value = c.cp || '';
+  $('cliTelefono').value = c.telefono || '';
+  $('cliNumCliente').value = c.codigo; // conserva el código CG-XXXX asociado
+  $('cliSeleccionadoId').value = c.id;
+  ocultarSuggest($('cliSuggestBox'));
+});
+document.addEventListener('click', (e)=>{
+  if(e.target !== $('cliNombre') && !$('cliSuggestBox').contains(e.target)) ocultarSuggest($('cliSuggestBox'));
+});
+
+/* ---- Autocompletado de PRODUCTOS en cada renglón (columna "Producto") ---- */
+$('productBody').addEventListener('input', (e)=>{
+  if(!e.target.matches('.prod')) return;
+  const input = e.target;
+  const tr = input.closest('tr');
+  tr.dataset.productoSeleccionadoId = ''; // escribir manualmente invalida cualquier selección previa
+  const q = input.value.trim().toLowerCase();
+  const box = $('prodSuggestBox');
+  if(!q){ ocultarSuggest(box); return; }
+  const coincidencias = productosCache
+    .filter(p => (p.nombre || '').toLowerCase().startsWith(q))
+    .slice(0, 8);
+  if(coincidencias.length === 0){ ocultarSuggest(box); return; }
+  box.innerHTML = coincidencias.map(p =>
+    `<div class="suggest-item" data-producto-id="${p.id}"><span class="cod">${p.codigo}</span><span>${p.nombre}</span></div>`
+  ).join('');
+  box._filaActiva = tr;
+  posicionarSuggestBox(box, input);
+  box.style.display = 'block';
+});
+$('prodSuggestBox').addEventListener('mousedown', (e)=>{
+  const item = e.target.closest('[data-producto-id]');
+  if(!item) return;
+  const p = productosCache.find(x => x.id === item.dataset.productoId);
+  const tr = $('prodSuggestBox')._filaActiva;
+  if(!p || !tr) return;
+  tr.querySelector('.prod').value = p.nombre;
+  tr.querySelector('.code').value = p.codigo;
+  tr.querySelector('.price').value = p.precio || 0;
+  // Si el renglón todavía no tenía cantidad (vacío o 0), se coloca 1 automáticamente
+  // al seleccionar un producto — así el importe se ve de inmediato, sin un paso extra.
+  const qtyInput = tr.querySelector('.qty');
+  if(!qtyInput.value || parseNumeroSeguro(qtyInput.value) === 0){
+    qtyInput.value = '1';
+  }
+  tr.dataset.productoSeleccionadoId = p.id;
+  // Recalcular de inmediato con la MISMA función ya probada — no se duplica la lógica de cálculo
+  calcularImporteDeFila(tr);
+  recalcTotals();
+  ocultarSuggest($('prodSuggestBox'));
+});
+document.addEventListener('click', (e)=>{
+  if(!e.target.matches('.prod') && !$('prodSuggestBox').contains(e.target)) ocultarSuggest($('prodSuggestBox'));
+});
+
+/* ============================================================
+   GENERAR PDF — módulo nuevo, no toca ninguna función existente.
+   Genera un PDF real (%PDF válido) SIN librerías externas, leyendo
+   ÚNICAMENTE lo que ya está en pantalla (solo lectura): cliente,
+   vendedor, forma de pago, condiciones, productos y totales tal cual
+   aparecen — no recalcula ni altera nada. Reutiliza el logo que ya
+   esté cargado en el encabezado (#hdrLogo), si existe. Sin IVA. ============================================================ */
+async function generarPDFBlob(){
+  try{
+    const nombreCliente = $('cliNombre').value.trim() || '—';
+    const numCliente = $('cliNumCliente').value.trim() || '—';
+    const direccion = $('cliDireccion').value.trim();
+    const ciudad = $('cliCiudad').value.trim();
+    const estado = $('cliEstado').value.trim();
+    const cp = $('cliCP').value.trim();
+    const telefono = $('cliTelefono').value.trim();
+    const vendedor = document.querySelector('.vendedor-static').textContent.trim();
+    const formaPago = document.querySelector('#formaPagoSeg button.active').textContent.trim();
+    const condiciones = document.querySelector('#condicionesSeg button.active').textContent.trim();
+    const vence = $('venceVal').textContent.trim();
+    const folio = $('folioDisplay').textContent.trim();
+    const fecha = $('folioFecha').textContent.trim();
+    const hora = $('folioHora').textContent.trim();
+    const subtotalTxt = $('subtotalVal').textContent.trim();
+    const descuentoTxt = $('descuentoVal').textContent.trim();
+    const totalTxt = $('totalVal').textContent.trim();
+
+    const totalLineEls = [...document.querySelectorAll('.totals-line')];
+    const lineaPago = totalLineEls.find(l => l.textContent.includes('Pago recibido'));
+    const lineaSaldo = totalLineEls.find(l => l.textContent.includes('Saldo'));
+    const pagoRecibidoTxt = lineaPago ? lineaPago.querySelector('.amt').textContent.trim() : '—';
+    const saldoTxt = lineaSaldo ? lineaSaldo.querySelector('.amt').textContent.trim() : '—';
+
+    const filas = [...document.querySelectorAll('#productBody tr')].map(tr => ({
+      codigo: tr.querySelector('.code').value.trim(),
+      producto: tr.querySelector('.prod').value.trim(),
+      cantidad: tr.querySelector('.qty').value.trim() || '0',
+      precio: tr.querySelector('.price').value.trim() || '0',
+      importe: tr.querySelector('[data-importe]').textContent.trim()
+    })).filter(f => f.producto);
+
+    // Logo: se reutiliza el que YA esté cargado en el encabezado, si existe
+    let logoJpegBytes = null, logoW = 120, logoH = 120;
+    try{
+      const logoEl = $('hdrLogo');
+      if(logoEl && logoEl.src){
+        const c = document.createElement('canvas');
+        c.width = logoW; c.height = logoH;
+        const cctx = c.getContext('2d');
+        cctx.fillStyle = '#0C1730'; cctx.fillRect(0, 0, logoW, logoH);
+        cctx.drawImage(logoEl, 0, 0, logoW, logoH);
+        const b64 = c.toDataURL('image/jpeg', 0.85).split(',')[1];
+        logoJpegBytes = atob(b64);
+      }
+    }catch(e){ logoJpegBytes = null; }
+
+    const PAGE_W = 595.28, PAGE_H = 841.89, MARGIN = 40;
+    const COLW = PAGE_W - MARGIN * 2;
+    const COL = {
+      navy: [0.059, 0.106, 0.235], navyDark: [0.039, 0.075, 0.176], gold: [0.776, 0.631, 0.357],
+      ink: [0.09, 0.125, 0.22], inkSoft: [0.34, 0.376, 0.486], inkFaint: [0.576, 0.627, 0.725], white: [1, 1, 1]
+    };
+
+    const objects = [];
+    function addObject(entry){ objects.push(entry); return objects.length; }
+    function pdfEscape(str){ return String(str).replace(/[\\()]/g, c => '\\' + c); }
+    function toLatin1(str){
+      const MAPA = { '—':0x97, '–':0x96, '…':0x85, '’':0x92, '‘':0x91, '“':0x93, '”':0x94 };
+      let out = '';
+      for(const ch of String(str)){
+        const cp = ch.codePointAt(0);
+        if(cp <= 255){ out += ch; }
+        else if(MAPA[ch] !== undefined){ out += String.fromCharCode(MAPA[ch]); }
+        else { out += '?'; }
+      }
+      return out;
+    }
+    function textWidth(str, size, bold){ return String(str).length * size * (bold ? 0.60 : 0.52); }
+    function fitTextPdf(str, maxWidth, size, bold){
+      str = String(str);
+      if(textWidth(str, size, bold) <= maxWidth) return str;
+      let out = str;
+      while(out.length > 1 && textWidth(out + '…', size, bold) > maxWidth){ out = out.slice(0, -1); }
+      return out + '…';
+    }
+    let pageStreams = [], ops = [];
+    function flushPage(){ pageStreams.push(ops); ops = []; }
+    function o(l){ ops.push(l); }
+    function fillColor(rgb){ o(`${rgb[0].toFixed(3)} ${rgb[1].toFixed(3)} ${rgb[2].toFixed(3)} rg`); }
+    function strokeColor(rgb){ o(`${rgb[0].toFixed(3)} ${rgb[1].toFixed(3)} ${rgb[2].toFixed(3)} RG`); }
+    function rectTop(x, yTop, w, h, mode){ const y = PAGE_H - yTop - h; o(`${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re`); o(mode === 'S' ? 'S' : 'f'); }
+    function lineTop(x1, yTop1, x2, yTop2, w){ o(`${w.toFixed(2)} w`); o(`${x1.toFixed(2)} ${(PAGE_H - yTop1).toFixed(2)} m ${x2.toFixed(2)} ${(PAGE_H - yTop2).toFixed(2)} l S`); }
+    function textTop(x, yTop, str, size, bold, align){
+      str = toLatin1(str);
+      let tx = x;
+      if(align === 'right') tx = x - textWidth(str, size, bold);
+      else if(align === 'center') tx = x - textWidth(str, size, bold) / 2;
+      o('BT'); o(`${bold ? '/F2' : '/F1'} ${size} Tf`); o(`${tx.toFixed(2)} ${(PAGE_H - yTop).toFixed(2)} Td`); o(`(${pdfEscape(str)}) Tj`); o('ET');
+    }
+    function drawLogo(x, yTop, w, h){
+      if(!logoJpegBytes) return;
+      o('q'); o(`${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${(PAGE_H - yTop - h).toFixed(2)} cm`); o('/Im1 Do'); o('Q');
+    }
+
+    const usableBottom = PAGE_H - MARGIN;
+
+    function dibujarEncabezado(){
+      fillColor(COL.navy);
+      rectTop(0, 0, PAGE_W, 92, 'f');
+      const logoSize = 46, logoX = MARGIN + 6, logoY = 12;
+      if(logoJpegBytes){ drawLogo(logoX, logoY, logoSize, logoSize); }
+      else { fillColor(COL.navyDark); rectTop(logoX, logoY, logoSize, logoSize, 'f'); }
+      const tx0 = logoX + logoSize + 14;
+      fillColor(COL.white);
+      textTop(tx0, 32, 'GARDENT DEPÓSITO DENTAL', 15, true);
+      textTop(tx0, 48, 'Revolución #324, Col. El Vergel, C.P. 38078, Celaya, Gto.', 8.5, false);
+      textTop(tx0, 60, 'Tel. 461 608-0097  ·  WhatsApp 461 124-9867', 8, false);
+      textTop(MARGIN + COLW, 32, 'Folio: ' + folio, 11, true, 'right');
+      textTop(MARGIN + COLW, 48, fecha + '   ' + hora, 8.5, false, 'right');
+    }
+    function dibujarTitulo(txt, yTop){
+      fillColor(COL.navy); textTop(MARGIN, yTop + 9, txt.toUpperCase(), 9, true);
+      strokeColor(COL.gold); lineTop(MARGIN, yTop + 14, MARGIN + COLW, yTop + 14, 1.4);
+      return yTop + 24;
+    }
+    function lineaDato(txt, yTop){
+      fillColor(COL.ink); textTop(MARGIN, yTop + 9, fitTextPdf(txt, COLW, 9, false), 9, false);
+      return yTop + 16;
+    }
+    function totalLinea(label, valor, yTop, destacado){
+      fillColor(COL.inkSoft); textTop(MARGIN + COLW - 200, yTop + 9, label, destacado ? 10.5 : 9, destacado);
+      fillColor(destacado ? COL.navy : COL.ink); textTop(MARGIN + COLW, yTop + 9, valor, destacado ? 10.5 : 9, destacado, 'right');
+      return yTop + (destacado ? 20 : 16);
+    }
+
+    dibujarEncabezado();
+    let y = 100;
+    y = dibujarTitulo('Datos del cliente', y);
+    y = lineaDato(`Dr. / Cliente: ${nombreCliente}     No. Cliente: ${numCliente}`, y);
+    y = lineaDato(`Dirección: ${direccion || '—'}`, y);
+    y = lineaDato(`Ciudad: ${ciudad || '—'}   Estado: ${estado || '—'}   C.P.: ${cp || '—'}`, y);
+    y = lineaDato(`Teléfono: ${telefono || '—'}`, y);
+    y = lineaDato(`Vendedor: ${vendedor}`, y);
+    y = lineaDato(`Forma de pago: ${formaPago}   Condiciones: ${condiciones}   Vence: ${vence}`, y);
+    y += 8;
+
+    y = dibujarTitulo('Productos', y);
+    fillColor([0.957, 0.965, 0.980]); rectTop(MARGIN - 4, y - 2, COLW + 8, 16, 'f');
+    fillColor(COL.inkSoft);
+    textTop(MARGIN, y + 9, 'CÓDIGO', 7, true);
+    textTop(MARGIN + 90, y + 9, 'CANT.', 7, true);
+    textTop(MARGIN + 140, y + 9, 'PRODUCTO', 7, true);
+    textTop(MARGIN + COLW - 70, y + 9, 'PRECIO', 7, true, 'right');
+    textTop(MARGIN + COLW, y + 9, 'IMPORTE', 7, true, 'right');
+    y += 16;
+
+    const rowH = 16;
+    if(filas.length === 0){
+      fillColor(COL.inkFaint); textTop(MARGIN, y + 11, 'Sin productos capturados.', 8, false); y += rowH;
+    } else {
+      filas.forEach((f, i)=>{
+        if(y + rowH > usableBottom){
+          flushPage(); y = MARGIN;
+          fillColor(COL.navy); textTop(MARGIN, y + 10, `Nota ${folio} — continuación`, 9, true);
+          strokeColor(COL.gold); lineTop(MARGIN, y + 16, MARGIN + COLW, y + 16, 1.2);
+          y += 26;
+        }
+        if(i % 2 === 1){ fillColor([0.980, 0.984, 0.992]); rectTop(MARGIN - 4, y, COLW + 8, rowH, 'f'); }
+        fillColor(COL.inkSoft); textTop(MARGIN, y + 11, f.codigo || '—', 7.5, false);
+        fillColor(COL.ink); textTop(MARGIN + 90, y + 11, f.cantidad, 7.5, false);
+        textTop(MARGIN + 140, y + 11, fitTextPdf(f.producto, COLW - 140 - 90 - 100, 8, false), 8, false);
+        textTop(MARGIN + COLW - 70, y + 11, f.precio, 7.5, false, 'right');
+        textTop(MARGIN + COLW, y + 11, f.importe, 8, true, 'right');
+        y += rowH;
+      });
+    }
+    y += 14;
+
+    const CLOSING_H = 110;
+    if(y + CLOSING_H > usableBottom){ flushPage(); y = MARGIN; }
+
+    y = totalLinea('Subtotal', subtotalTxt, y, false);
+    y = totalLinea('Descuentos', descuentoTxt, y, false);
+    fillColor(COL.navy); rectTop(MARGIN + COLW - 200, y, 200, 24, 'f');
+    fillColor(COL.white); textTop(MARGIN + COLW - 190, y + 16, 'TOTAL', 11, true);
+    textTop(MARGIN + COLW - 10, y + 16, totalTxt, 11, true, 'right');
+    y += 24 + 10;
+    y = totalLinea('Pago recibido', pagoRecibidoTxt, y, false);
+    y = totalLinea('Saldo', saldoTxt, y, false);
+    y += 14;
+    fillColor(COL.inkFaint);
+    textTop(MARGIN, y + 9, 'Nota generada sin IVA — precios manejados sin desglose de impuesto.', 7.5, false);
+    y += 20;
+
+    // ---- LEYENDA (nuevo, no reemplaza nada anterior) ----
+    const LEYENDA_H = 60;
+    if(y + LEYENDA_H > usableBottom){ flushPage(); y = MARGIN; }
+    strokeColor([0.867, 0.886, 0.925]); lineTop(MARGIN, y, MARGIN + COLW, y, 0.8);
+    y += 16;
+    fillColor(COL.inkSoft);
+    textTop(MARGIN + COLW / 2, y + 8, 'HACER QUE TODOS LOS CHEQUES SEAN PAGADEROS A DEPÓSITO DENTAL GARDENT', 7.5, true, 'center');
+    y += 12;
+    textTop(MARGIN + COLW / 2, y + 8, 'TOTAL A PAGAR EN 30 DÍAS', 7.5, true, 'center');
+    y += 12;
+    textTop(MARGIN + COLW / 2, y + 8, 'CUOTAS VENCIDAS SUJETAS A UN CARGO DEL 2% MENSUAL.', 7.5, true, 'center');
+    y += 20;
+
+    // ---- FRANJA INFERIOR de contacto, sangrado completo (nuevo, no reemplaza nada anterior) ----
+    fillColor(COL.navy);
+    rectTop(0, y, PAGE_W, 30, 'f');
+    fillColor(COL.white);
+    textTop(PAGE_W / 2, y + 19, 'CONTACTO PARA SEGUIMIENTO  ·  WhatsApp: 461 124 9867', 9, true, 'center');
+    y += 30;
+
+    flushPage();
+
+    // ---- Ensamblado binario del PDF ----
+    const fontF1 = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+    const fontF2 = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+    let imgObjNum = null;
+    if(logoJpegBytes){
+      imgObjNum = addObject({ stream: true, dict: `<< /Type /XObject /Subtype /Image /Width ${logoW} /Height ${logoH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${logoJpegBytes.length} >>`, data: logoJpegBytes });
+    }
+    const pageContentObjNums = pageStreams.map(pageOps => {
+      const data = pageOps.join('\n');
+      return addObject({ stream: true, dict: `<< /Length ${data.length} >>`, data });
+    });
+    const pagesObjNum = addObject('');
+    const resourcesDict = `<< /Font << /F1 ${fontF1} 0 R /F2 ${fontF2} 0 R >>${imgObjNum ? ` /XObject << /Im1 ${imgObjNum} 0 R >>` : ''} >>`;
+    const pageObjNums = pageContentObjNums.map(contentNum =>
+      addObject(`<< /Type /Page /Parent ${pagesObjNum} 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] /Resources ${resourcesDict} /Contents ${contentNum} 0 R >>`)
+    );
+    objects[pagesObjNum - 1] = `<< /Type /Pages /Kids [${pageObjNums.map(n => n + ' 0 R').join(' ')}] /Count ${pageObjNums.length} >>`;
+    const catalogObjNum = addObject(`<< /Type /Catalog /Pages ${pagesObjNum} 0 R >>`);
+
+    let pdf = '%PDF-1.4\n%\xE2\xE3\xCF\xD3\n';
+    const offsets = [0];
+    objects.forEach((entry, i)=>{
+      offsets[i + 1] = pdf.length;
+      const num = i + 1;
+      if(entry && entry.stream){ pdf += `${num} 0 obj\n${entry.dict}\nstream\n${entry.data}\nendstream\nendobj\n`; }
+      else { pdf += `${num} 0 obj\n${entry}\nendobj\n`; }
+    });
+    const xrefStart = pdf.length;
+    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    for(let i = 1; i <= objects.length; i++){ pdf += String(offsets[i]).padStart(10, '0') + ' 00000 n \n'; }
+    pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogObjNum} 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
+
+    const bytes = new Uint8Array(pdf.length);
+    for(let i = 0; i < pdf.length; i++){ bytes[i] = pdf.charCodeAt(i) & 0xFF; }
+    return new Blob([bytes], { type: 'application/pdf' });
+  }catch(err){
+    return null;
+  }
+}
+
+async function generarPDF(){
+  showToast('Generando PDF…');
+  const blob = await generarPDFBlob();
+  if(!blob){
+    showToast('No se pudo generar el PDF. Intenta de nuevo.', true);
+    return;
+  }
+  const folio = ($('folioDisplay').textContent || 'nota').trim();
+  const file = new File([blob], `Nota-${folio}.pdf`, { type: 'application/pdf' });
+
+  if(navigator.canShare && navigator.canShare({ files: [file] })){
+    try{ await navigator.share({ files: [file], title: `Nota ${folio}` }); return; }
+    catch(err){ return; } // el usuario canceló el panel nativo
+  }
+  const url = URL.createObjectURL(blob);
+  const ventana = window.open(url, '_blank');
+  if(!ventana){
+    showToast('Tu navegador bloqueó la vista del PDF. Revisa la configuración de ventanas emergentes.', true);
+  }
+}
+$('btnGenerarPDF').addEventListener('click', generarPDF);
+
+/* ============================================================
+   MÓDULO: CUENTAS POR COBRAR — se integra con guardarVenta() mediante
+   UNA sola línea ya agregada ahí (registrarCuentaPorCobrar). No toca
+   ninguna otra lógica de venta, clientes, productos, folios ni PDF.
+
+   Cada cuenta usa el FOLIO de la venta como llave (STORE_CXC, keyPath
+   'folio'), así que nunca se duplica ni se reutiliza un folio de venta.
+
+   Regla de negocio: "Contado" se considera pagado en el momento de la
+   venta (no genera saldo pendiente) — las condiciones a crédito
+   (1 semana / 15 días / 30 días) sí generan saldo pendiente. ============================================================ */
+async function registrarCuentaPorCobrar(venta){
+  // CORRECCIÓN: una venta de CONTADO nunca debe generar registro en Cuentas por Cobrar
+  // — se paga en el momento de la venta y no es una cuenta pendiente de cobrar. Antes se
+  // creaba igual (marcada ya como "PAGADA"), lo cual la seguía mostrando en el listado de
+  // CxC. Ahora simplemente no se registra ninguna cuenta para ventas de Contado.
+  if(venta.condicion === 'Contado') return;
+
+  const dias = CREDIT_DAYS[venta.condicion] ?? 0;
+  const fechaVenc = new Date(venta.fechaISO);
+  fechaVenc.setDate(fechaVenc.getDate() + dias);
+
+  const cuenta = {
+    folio: venta.folio,
+    fechaISO: venta.fechaISO,
+    cliente: venta.cliente,
+    telefono: venta.telefono || '',
+    total: venta.total,
+    condicion: venta.condicion,
+    fechaVencimientoISO: fechaVenc.toISOString(),
+    pagos: [],
+    pagado: 0,
+    saldo: venta.total
+  };
+  await idbPut(STORE_CXC, cuenta);
+}
+
+function calcularEstadoCxC(cuenta){
+  if(cuenta.saldo <= 0) return 'PAGADA';
+  const hoy = new Date();
+  const venc = new Date(cuenta.fechaVencimientoISO);
+  if(hoy > venc) return 'VENCIDA';
+  return 'PENDIENTE';
+}
+function pillEstadoHtml(estado){
+  if(estado === 'PAGADA') return '<span class="pill-estado pill-pagada">🟢 PAGADA</span>';
+  if(estado === 'VENCIDA') return '<span class="pill-estado pill-vencida">🔴 VENCIDA</span>';
+  return '<span class="pill-estado pill-pendiente">🟡 PENDIENTE</span>';
+}
+
+let cxcFiltroActual = 'todas';
+let cxcCuentasCache = [];   // última lista de cuentas renderizada — para que los botones de acción respondan al instante, sin otra consulta async
+let cxcVentasPorFolio = {}; // ventas completas (con productos) indexadas por folio — para generar el PDF exacto de esa nota
+
+async function calcularResumenCxC(cuentas){
+  let porCobrar = 0, vencido = 0, cobrado = 0;
+  cuentas.forEach(c=>{
+    const estado = calcularEstadoCxC(c);
+    if(estado === 'PAGADA'){ cobrado += c.pagado; }
+    else {
+      porCobrar += c.saldo;
+      if(estado === 'VENCIDA') vencido += c.saldo;
+    }
+  });
+  $('cxcTotalPorCobrar').textContent = fmtMoney(porCobrar);
+  $('cxcTotalVencido').textContent = fmtMoney(vencido);
+  $('cxcTotalCobrado').textContent = fmtMoney(cobrado);
+}
+
+async function renderCxC(){
+  let cuentas = [];
+  try{ cuentas = await idbGetAll(STORE_CXC); }
+  catch(err){ showToast('No se pudo leer las cuentas por cobrar', true); return; }
+
+  // Se cachean las ventas completas (con productos) por folio — solo para poder generar
+  // el PDF exacto de cada nota desde los botones de acción, sin tocar nada del flujo de venta.
+  try{
+    const ventas = await idbGetAll(STORE_VENTAS);
+    cxcVentasPorFolio = {};
+    ventas.forEach(v => { cxcVentasPorFolio[v.folio] = v; });
+  }catch(err){ cxcVentasPorFolio = {}; }
+
+  cuentas.sort((a, b) => new Date(b.fechaISO) - new Date(a.fechaISO));
+  cxcCuentasCache = cuentas;
+  await calcularResumenCxC(cuentas);
+
+  const filtro = cxcFiltroActual;
+  const busqueda = ($('cxcBuscar').value || '').trim().toLowerCase();
+
+  const filtradas = cuentas.filter(c=>{
+    const estado = calcularEstadoCxC(c);
+    if(filtro === 'pendientes' && estado !== 'PENDIENTE') return false;
+    if(filtro === 'vencidas' && estado !== 'VENCIDA') return false;
+    if(filtro === 'pagadas' && estado !== 'PAGADA') return false;
+    if(busqueda){
+      const coincide = c.folio.toLowerCase().includes(busqueda) || (c.cliente||'').toLowerCase().includes(busqueda);
+      if(!coincide) return false;
+    }
+    return true;
+  });
+
+  const body = $('cxcBody');
+  if(filtradas.length === 0){
+    body.innerHTML = '';
+    $('cxcVacio').style.display = 'block';
+    $('cxcVacio').textContent = cuentas.length === 0 ? 'No hay cuentas por cobrar registradas todavía.' : 'Ninguna cuenta coincide con el filtro/búsqueda.';
+    return;
+  }
+  $('cxcVacio').style.display = 'none';
+
+  body.innerHTML = filtradas.map(c=>{
+    const estado = calcularEstadoCxC(c);
+    const fechaTxt = new Date(c.fechaISO).toLocaleDateString('es-MX');
+    const vencTxt = c.condicion === 'Contado' ? '—' : new Date(c.fechaVencimientoISO).toLocaleDateString('es-MX');
+    return `
+      <tr data-cxc-folio="${c.folio}" style="cursor:pointer;">
+        <td class="mod-codigo">${c.folio}</td>
+        <td>${c.cliente}</td>
+        <td>${fechaTxt}</td>
+        <td>${vencTxt}</td>
+        <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${fmtMoney(c.total)}</td>
+        <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${fmtMoney(c.pagado)}</td>
+        <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${fmtMoney(c.saldo)}</td>
+        <td>${pillEstadoHtml(estado)}</td>
+        <td>
+          <div class="cxc-acciones-fila">
+            <button type="button" class="cxc-btn-accion whatsapp" data-cxc-accion="whatsapp" data-cxc-accion-folio="${c.folio}" title="Enviar recordatorio por WhatsApp">📲</button>
+            <button type="button" class="cxc-btn-accion pdf" data-cxc-accion="pdf" data-cxc-accion-folio="${c.folio}" title="Generar PDF de esta nota">📄</button>
+            <button type="button" class="cxc-btn-accion combo" data-cxc-accion="combo" data-cxc-accion-folio="${c.folio}" title="WhatsApp + PDF">📲📄</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+async function abrirDetalleCxC(folio){
+  const cuenta = await idbGet(STORE_CXC, folio);
+  if(!cuenta) return;
+  $('cxcDetalleFolioActual').value = folio;
+  $('cxcDetalleFolio').textContent = cuenta.folio;
+  $('cxcDetalleCliente').textContent = cuenta.cliente;
+  $('cxcDetalleFecha').textContent = new Date(cuenta.fechaISO).toLocaleDateString('es-MX');
+  $('cxcDetalleVencimiento').textContent = cuenta.condicion === 'Contado' ? '—' : new Date(cuenta.fechaVencimientoISO).toLocaleDateString('es-MX');
+  $('cxcDetalleTotal').textContent = fmtMoney(cuenta.total);
+  $('cxcDetallePagado').textContent = fmtMoney(cuenta.pagado);
+  $('cxcDetalleSaldo').textContent = fmtMoney(cuenta.saldo);
+  $('cxcDetalleEstado').innerHTML = pillEstadoHtml(calcularEstadoCxC(cuenta));
+  $('cxcPagoImporte').value = '';
+
+  const pagos = cuenta.pagos || [];
+  if(pagos.length === 0){
+    $('cxcHistorialPagosBody').innerHTML = '';
+    $('cxcSinPagos').style.display = 'block';
+  } else {
+    $('cxcSinPagos').style.display = 'none';
+    // Se reconstruye el saldo restante despues de CADA pago, en orden cronologico
+    let saldoCorriendo = cuenta.total;
+    const filas = pagos.map(p=>{
+      saldoCorriendo -= p.importe;
+      return `<tr><td>${new Date(p.fechaISO).toLocaleDateString('es-MX')}</td><td style="text-align:right; font-family:'JetBrains Mono',monospace;">${fmtMoney(p.importe)}</td><td style="text-align:right; font-family:'JetBrains Mono',monospace;">${fmtMoney(Math.max(0,saldoCorriendo))}</td></tr>`;
+    });
+    $('cxcHistorialPagosBody').innerHTML = filas.join('');
+  }
+
+  $('cxcVistaLista').style.display = 'none';
+  $('cxcVistaDetalle').style.display = 'block';
+}
+function volverListaCxC(){
+  $('cxcVistaDetalle').style.display = 'none';
+  $('cxcVistaLista').style.display = 'block';
+  renderCxC();
+}
+
+let guardandoPago = false;
+async function registrarPagoCxC(){
+  if(guardandoPago) return; // anti-doble-clic, mismo patrón ya probado en el resto del PDV
+  guardandoPago = true;
+  $('btnRegistrarPago').disabled = true;
+  $('btnRegistrarPago').textContent = 'Guardando…';
+
+  try{
+    const folio = $('cxcDetalleFolioActual').value;
+    const importe = parseNumeroSeguro($('cxcPagoImporte').value);
+    if(importe <= 0){
+      showToast('Captura un importe válido (mayor a 0)', true);
+      return;
+    }
+    const cuenta = await idbGet(STORE_CXC, folio);
+    if(!cuenta) return;
+
+    const nuevoPagado = (cuenta.pagado || 0) + importe;
+    const nuevoSaldo = Math.max(0, cuenta.total - nuevoPagado);
+
+    cuenta.pagos = cuenta.pagos || [];
+    cuenta.pagos.push({ fechaISO: new Date().toISOString(), importe }); // no se borran pagos anteriores
+    cuenta.pagado = nuevoPagado;
+    cuenta.saldo = nuevoSaldo;
+
+    await idbPut(STORE_CXC, cuenta);
+    showToast(nuevoSaldo <= 0 ? `Pago registrado — cuenta ${cuenta.folio} PAGADA` : `Pago registrado — saldo restante: ${fmtMoney(nuevoSaldo)}`);
+    await abrirDetalleCxC(folio); // refresca el detalle con el pago recien agregado
+
+  }catch(err){
+    showToast('No se pudo registrar el pago. Intenta de nuevo.', true);
+  }finally{
+    guardandoPago = false;
+    $('btnRegistrarPago').disabled = false;
+    $('btnRegistrarPago').textContent = '💰 Registrar pago';
+  }
+}
+
+async function abrirCxC(){
+  $('cxcVistaDetalle').style.display = 'none';
+  $('cxcVistaLista').style.display = 'block';
+  $('cxcBuscar').value = '';
+  cxcFiltroActual = 'todas';
+  [...$('cxcFiltros').children].forEach(b=>b.classList.toggle('active', b.dataset.filtro === 'todas'));
+  $('cxcOverlay').classList.add('open');
+  await renderCxC();
+}
+function cerrarCxC(){ $('cxcOverlay').classList.remove('open'); }
+
+$('navCxC').addEventListener('click', abrirCxC);
+$('cxcClose').addEventListener('click', cerrarCxC);
+$('cxcOverlay').addEventListener('click', (e)=>{ if(e.target === $('cxcOverlay')) cerrarCxC(); });
+$('cxcFiltros').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...$('cxcFiltros').children].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  cxcFiltroActual = btn.dataset.filtro;
+  renderCxC();
+});
+$('cxcBuscar').addEventListener('input', renderCxC);
+$('cxcBody').addEventListener('click', (e)=>{
+  if(e.target.closest('[data-cxc-accion]')) return; // los botones de acción (WhatsApp/PDF) tienen su propio manejador, más abajo
+  const fila = e.target.closest('[data-cxc-folio]');
+  if(!fila) return;
+  abrirDetalleCxC(fila.dataset.cxcFolio);
+});
+$('btnVolverCxCLista').addEventListener('click', volverListaCxC);
+$('btnRegistrarPago').addEventListener('click', registrarPagoCxC);
+
+/* ============================================================
+   RECORDATORIOS POR WHATSAPP + PDF DESDE CUENTAS POR COBRAR
+   Módulo aditivo — no modifica el registro de cuentas, los totales,
+   vencimientos, estados, historial, clientes, productos ni el PDF
+   principal de la nota en pantalla. Todo lo de aquí es NUEVO.
+   ============================================================ */
+
+// Limpia el teléfono al formato internacional de México (+52), sin duplicarlo si ya lo trae.
+function limpiarTelefonoWhatsappCxC(telefono){
+  let numero = String(telefono || '').replace(/\D/g, '');
+  if(numero.length === 10) numero = '52' + numero;
+  return numero;
+}
+
+// Arma el mensaje de recordatorio con los datos REALES de la cuenta — nunca datos fijos ni de ejemplo.
+function construirMensajeCxC(cuenta){
+  const estado = calcularEstadoCxC(cuenta);
+  const fechaTxt = new Date(cuenta.fechaISO).toLocaleDateString('es-MX');
+  const vencTxt = cuenta.condicion === 'Contado' ? '—' : new Date(cuenta.fechaVencimientoISO).toLocaleDateString('es-MX');
+
+  if(estado === 'VENCIDA'){
+    return `⚠️ Hola, Dr. ${cuenta.cliente}.\n\nLe recordamos que la nota ${cuenta.folio} presenta un saldo vencido.\n\nFecha de la nota: ${fechaTxt}\nFecha de vencimiento: ${vencTxt}\nTotal de la nota: ${fmtMoney(cuenta.total)}\nPagado: ${fmtMoney(cuenta.pagado)}\nSaldo vencido: ${fmtMoney(cuenta.saldo)}\n\nAgradecemos mucho su atención y quedamos pendientes de su pago.\n\nGARDENT\nDepósito Dental`;
+  }
+  return `Hola, Dr. ${cuenta.cliente}.\n\nLe recordamos que tiene un saldo pendiente con GARDENT correspondiente a la nota ${cuenta.folio}.\n\nFecha de la nota: ${fechaTxt}\nFecha de vencimiento: ${vencTxt}\nTotal de la nota: ${fmtMoney(cuenta.total)}\nPagado: ${fmtMoney(cuenta.pagado)}\nSaldo pendiente: ${fmtMoney(cuenta.saldo)}\n\nAgradecemos mucho su atención.\n\nGARDENT\nDepósito Dental`;
+}
+
+function obtenerTelefonoCuenta(cuenta, venta){
+  return (cuenta && cuenta.telefono) || (venta && venta.telefono) || '';
+}
+
+// 📲 Abre WhatsApp con el mensaje ya preparado — usa el enlace oficial wa.me, el método
+// más confiable en Edge/iPad. No depende de ninguna consulta async previa (usa la caché
+// ya cargada por renderCxC), para no perder el gesto del usuario antes de abrir la ventana.
+function enviarWhatsAppCxC(folio){
+  const cuenta = cxcCuentasCache.find(c => c.folio === folio);
+  if(!cuenta){ showToast('No se encontró esta cuenta', true); return; }
+  const venta = cxcVentasPorFolio[folio];
+  const telefono = obtenerTelefonoCuenta(cuenta, venta);
+  if(!telefono){
+    showToast('Esta cuenta no tiene un teléfono guardado', true);
+    return;
+  }
+  const numeroLimpio = limpiarTelefonoWhatsappCxC(telefono);
+  const mensaje = construirMensajeCxC(cuenta);
+  const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+}
+
+// ---- Generador de PDF para una VENTA/CUENTA específica (no la que está en pantalla) ----
+// Duplica deliberadamente el motor de dibujo del PDF principal (en vez de reutilizarlo)
+// para no tocar ni una línea de generarPDFBlob(), que sigue generando el PDF de la nota
+// EN PANTALLA exactamente como antes. Mismo formato visual, mismos datos, misma leyenda.
+async function generarPDFBlobParaVenta(venta, cuenta){
+  try{
+    const nombreCliente = venta.cliente || '—';
+    const direccion = venta.direccion || '';
+    const ciudad = venta.ciudad || '';
+    const estadoCli = venta.estado || '';
+    const cp = venta.cp || '';
+    const telefono = venta.telefono || '';
+    const vendedor = venta.vendedor || 'Christian Golop';
+    const formaPago = venta.formaPago || '—';
+    const condiciones = venta.condicion || '—';
+    const vence = cuenta.condicion === 'Contado' ? 'Pago de contado' : new Date(cuenta.fechaVencimientoISO).toLocaleDateString('es-MX');
+    const folio = venta.folio;
+    const fecha = venta.fecha || new Date(venta.fechaISO).toLocaleDateString('es-MX');
+    const hora = venta.hora || '';
+    const totalTxt = fmtMoney(venta.total);
+    const descuentoTxt = fmtMoney(0);
+    const pagoRecibidoTxt = fmtMoney(cuenta.pagado || 0);
+    const saldoTxt = fmtMoney(cuenta.saldo || 0);
+    const subtotalTxt = fmtMoney(venta.total); // esta app no maneja descuentos: subtotal = total
+
+    const filas = (venta.productos || []).map(f => ({
+      codigo: f.codigo || '',
+      producto: f.producto || '',
+      cantidad: String(f.cantidad ?? '0'),
+      precio: String(f.precio ?? '0'),
+      importe: fmtMoney(f.importe ?? 0)
+    }));
+
+    let logoJpegBytes = null, logoW = 120, logoH = 120;
+    try{
+      const logoEl = $('hdrLogo');
+      if(logoEl && logoEl.src){
+        const c = document.createElement('canvas');
+        c.width = logoW; c.height = logoH;
+        const cctx = c.getContext('2d');
+        cctx.fillStyle = '#0C1730'; cctx.fillRect(0, 0, logoW, logoH);
+        cctx.drawImage(logoEl, 0, 0, logoW, logoH);
+        const b64 = c.toDataURL('image/jpeg', 0.85).split(',')[1];
+        logoJpegBytes = atob(b64);
+      }
+    }catch(e){ logoJpegBytes = null; }
+
+    const PAGE_W = 595.28, PAGE_H = 841.89, MARGIN = 40;
+    const COLW = PAGE_W - MARGIN * 2;
+    const COL = {
+      navy: [0.059, 0.106, 0.235], navyDark: [0.039, 0.075, 0.176], gold: [0.776, 0.631, 0.357],
+      ink: [0.09, 0.125, 0.22], inkSoft: [0.34, 0.376, 0.486], inkFaint: [0.576, 0.627, 0.725], white: [1, 1, 1]
+    };
+
+    const objects = [];
+    function addObject(entry){ objects.push(entry); return objects.length; }
+    function pdfEscape(str){ return String(str).replace(/[\\()]/g, c => '\\' + c); }
+    function toLatin1(str){
+      const MAPA = { '—':0x97, '–':0x96, '…':0x85, '’':0x92, '‘':0x91, '“':0x93, '”':0x94 };
+      let out = '';
+      for(const ch of String(str)){
+        const cp = ch.codePointAt(0);
+        if(cp <= 255){ out += ch; }
+        else if(MAPA[ch] !== undefined){ out += String.fromCharCode(MAPA[ch]); }
+        else { out += '?'; }
+      }
+      return out;
+    }
+    function textWidth(str, size, bold){ return String(str).length * size * (bold ? 0.60 : 0.52); }
+    function fitTextPdf(str, maxWidth, size, bold){
+      str = String(str);
+      if(textWidth(str, size, bold) <= maxWidth) return str;
+      let out = str;
+      while(out.length > 1 && textWidth(out + '…', size, bold) > maxWidth){ out = out.slice(0, -1); }
+      return out + '…';
+    }
+    let pageStreams = [], ops = [];
+    function flushPage(){ pageStreams.push(ops); ops = []; }
+    function o(l){ ops.push(l); }
+    function fillColor(rgb){ o(`${rgb[0].toFixed(3)} ${rgb[1].toFixed(3)} ${rgb[2].toFixed(3)} rg`); }
+    function strokeColor(rgb){ o(`${rgb[0].toFixed(3)} ${rgb[1].toFixed(3)} ${rgb[2].toFixed(3)} RG`); }
+    function rectTop(x, yTop, w, h, mode){ const y = PAGE_H - yTop - h; o(`${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re`); o(mode === 'S' ? 'S' : 'f'); }
+    function lineTop(x1, yTop1, x2, yTop2, w){ o(`${w.toFixed(2)} w`); o(`${x1.toFixed(2)} ${(PAGE_H - yTop1).toFixed(2)} m ${x2.toFixed(2)} ${(PAGE_H - yTop2).toFixed(2)} l S`); }
+    function textTop(x, yTop, str, size, bold, align){
+      str = toLatin1(str);
+      let tx = x;
+      if(align === 'right') tx = x - textWidth(str, size, bold);
+      else if(align === 'center') tx = x - textWidth(str, size, bold) / 2;
+      o('BT'); o(`${bold ? '/F2' : '/F1'} ${size} Tf`); o(`${tx.toFixed(2)} ${(PAGE_H - yTop).toFixed(2)} Td`); o(`(${pdfEscape(str)}) Tj`); o('ET');
+    }
+    function drawLogo(x, yTop, w, h){
+      if(!logoJpegBytes) return;
+      o('q'); o(`${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${(PAGE_H - yTop - h).toFixed(2)} cm`); o('/Im1 Do'); o('Q');
+    }
+
+    const usableBottom = PAGE_H - MARGIN;
+
+    function dibujarEncabezado(){
+      fillColor(COL.navy);
+      rectTop(0, 0, PAGE_W, 92, 'f');
+      const logoSize = 46, logoX = MARGIN + 6, logoY = 12;
+      if(logoJpegBytes){ drawLogo(logoX, logoY, logoSize, logoSize); }
+      else { fillColor(COL.navyDark); rectTop(logoX, logoY, logoSize, logoSize, 'f'); }
+      const tx0 = logoX + logoSize + 14;
+      fillColor(COL.white);
+      textTop(tx0, 32, 'GARDENT DEPÓSITO DENTAL', 15, true);
+      textTop(tx0, 48, 'Revolución #324, Col. El Vergel, C.P. 38078, Celaya, Gto.', 8.5, false);
+      textTop(tx0, 60, 'Tel. 461 608-0097  ·  WhatsApp 461 124-9867', 8, false);
+      textTop(MARGIN + COLW, 32, 'Folio: ' + folio, 11, true, 'right');
+      textTop(MARGIN + COLW, 48, fecha + '   ' + hora, 8.5, false, 'right');
+    }
+    function dibujarTitulo(txt, yTop){
+      fillColor(COL.navy); textTop(MARGIN, yTop + 9, txt.toUpperCase(), 9, true);
+      strokeColor(COL.gold); lineTop(MARGIN, yTop + 14, MARGIN + COLW, yTop + 14, 1.4);
+      return yTop + 24;
+    }
+    function lineaDato(txt, yTop){
+      fillColor(COL.ink); textTop(MARGIN, yTop + 9, fitTextPdf(txt, COLW, 9, false), 9, false);
+      return yTop + 16;
+    }
+    function totalLinea(label, valor, yTop, destacado){
+      fillColor(COL.inkSoft); textTop(MARGIN + COLW - 200, yTop + 9, label, destacado ? 10.5 : 9, destacado);
+      fillColor(destacado ? COL.navy : COL.ink); textTop(MARGIN + COLW, yTop + 9, valor, destacado ? 10.5 : 9, destacado, 'right');
+      return yTop + (destacado ? 20 : 16);
+    }
+
+    dibujarEncabezado();
+    let y = 100;
+    y = dibujarTitulo('Datos del cliente', y);
+    y = lineaDato(`Dr. / Cliente: ${nombreCliente}`, y);
+    y = lineaDato(`Dirección: ${direccion || '—'}`, y);
+    y = lineaDato(`Ciudad: ${ciudad || '—'}   Estado: ${estadoCli || '—'}   C.P.: ${cp || '—'}`, y);
+    y = lineaDato(`Teléfono: ${telefono || '—'}`, y);
+    y = lineaDato(`Vendedor: ${vendedor}`, y);
+    y = lineaDato(`Forma de pago: ${formaPago}   Condiciones: ${condiciones}   Vence: ${vence}`, y);
+    y += 8;
+
+    y = dibujarTitulo('Productos', y);
+    fillColor([0.957, 0.965, 0.980]); rectTop(MARGIN - 4, y - 2, COLW + 8, 16, 'f');
+    fillColor(COL.inkSoft);
+    textTop(MARGIN, y + 9, 'CÓDIGO', 7, true);
+    textTop(MARGIN + 90, y + 9, 'CANT.', 7, true);
+    textTop(MARGIN + 140, y + 9, 'PRODUCTO', 7, true);
+    textTop(MARGIN + COLW - 70, y + 9, 'PRECIO', 7, true, 'right');
+    textTop(MARGIN + COLW, y + 9, 'IMPORTE', 7, true, 'right');
+    y += 16;
+
+    const rowH = 16;
+    if(filas.length === 0){
+      fillColor(COL.inkFaint); textTop(MARGIN, y + 11, 'Sin productos capturados.', 8, false); y += rowH;
+    } else {
+      filas.forEach((f, i)=>{
+        if(y + rowH > usableBottom){
+          flushPage(); y = MARGIN;
+          fillColor(COL.navy); textTop(MARGIN, y + 10, `Nota ${folio} — continuación`, 9, true);
+          strokeColor(COL.gold); lineTop(MARGIN, y + 16, MARGIN + COLW, y + 16, 1.2);
+          y += 26;
+        }
+        if(i % 2 === 1){ fillColor([0.980, 0.984, 0.992]); rectTop(MARGIN - 4, y, COLW + 8, rowH, 'f'); }
+        fillColor(COL.inkSoft); textTop(MARGIN, y + 11, f.codigo || '—', 7.5, false);
+        fillColor(COL.ink); textTop(MARGIN + 90, y + 11, f.cantidad, 7.5, false);
+        textTop(MARGIN + 140, y + 11, fitTextPdf(f.producto, COLW - 140 - 90 - 100, 8, false), 8, false);
+        textTop(MARGIN + COLW - 70, y + 11, f.precio, 7.5, false, 'right');
+        textTop(MARGIN + COLW, y + 11, f.importe, 8, true, 'right');
+        y += rowH;
+      });
+    }
+    y += 14;
+
+    const CLOSING_H = 130;
+    if(y + CLOSING_H > usableBottom){ flushPage(); y = MARGIN; }
+
+    y = totalLinea('Subtotal', subtotalTxt, y, false);
+    y = totalLinea('Descuentos', descuentoTxt, y, false);
+    fillColor(COL.navy); rectTop(MARGIN + COLW - 200, y, 200, 24, 'f');
+    fillColor(COL.white); textTop(MARGIN + COLW - 190, y + 16, 'TOTAL', 11, true);
+    textTop(MARGIN + COLW - 10, y + 16, totalTxt, 11, true, 'right');
+    y += 24 + 10;
+    y = totalLinea('Pago recibido', pagoRecibidoTxt, y, false);
+    y = totalLinea('Saldo', saldoTxt, y, false);
+    y += 14;
+    fillColor(COL.inkFaint);
+    textTop(MARGIN, y + 9, 'Nota generada sin IVA — precios manejados sin desglose de impuesto.', 7.5, false);
+    y += 20;
+
+    const LEYENDA_H = 60;
+    if(y + LEYENDA_H > usableBottom){ flushPage(); y = MARGIN; }
+    strokeColor([0.867, 0.886, 0.925]); lineTop(MARGIN, y, MARGIN + COLW, y, 0.8);
+    y += 16;
+    fillColor(COL.inkSoft);
+    textTop(MARGIN + COLW / 2, y + 8, 'HACER QUE TODOS LOS CHEQUES SEAN PAGADEROS A DEPÓSITO DENTAL GARDENT', 7.5, true, 'center');
+    y += 12;
+    textTop(MARGIN + COLW / 2, y + 8, 'TOTAL A PAGAR EN 30 DÍAS', 7.5, true, 'center');
+    y += 12;
+    textTop(MARGIN + COLW / 2, y + 8, 'CUOTAS VENCIDAS SUJETAS A UN CARGO DEL 2% MENSUAL.', 7.5, true, 'center');
+    y += 20;
+
+    fillColor(COL.navy);
+    rectTop(0, y, PAGE_W, 30, 'f');
+    fillColor(COL.white);
+    textTop(PAGE_W / 2, y + 19, 'CONTACTO PARA SEGUIMIENTO  ·  WhatsApp: 461 124 9867', 9, true, 'center');
+    y += 30;
+
+    flushPage();
+
+    const fontF1 = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+    const fontF2 = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+    let imgObjNum = null;
+    if(logoJpegBytes){
+      imgObjNum = addObject({ stream: true, dict: `<< /Type /XObject /Subtype /Image /Width ${logoW} /Height ${logoH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${logoJpegBytes.length} >>`, data: logoJpegBytes });
+    }
+    const pageContentObjNums = pageStreams.map(pageOps => {
+      const data = pageOps.join('\n');
+      return addObject({ stream: true, dict: `<< /Length ${data.length} >>`, data });
+    });
+    const pagesObjNum = addObject('');
+    const resourcesDict = `<< /Font << /F1 ${fontF1} 0 R /F2 ${fontF2} 0 R >>${imgObjNum ? ` /XObject << /Im1 ${imgObjNum} 0 R >>` : ''} >>`;
+    const pageObjNums = pageContentObjNums.map(contentNum =>
+      addObject(`<< /Type /Page /Parent ${pagesObjNum} 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] /Resources ${resourcesDict} /Contents ${contentNum} 0 R >>`)
+    );
+    objects[pagesObjNum - 1] = `<< /Type /Pages /Kids [${pageObjNums.map(n => n + ' 0 R').join(' ')}] /Count ${pageObjNums.length} >>`;
+    const catalogObjNum = addObject(`<< /Type /Catalog /Pages ${pagesObjNum} 0 R >>`);
+
+    let pdf = '%PDF-1.4\n%\xE2\xE3\xCF\xD3\n';
+    const offsets = [0];
+    objects.forEach((entry, i)=>{
+      offsets[i + 1] = pdf.length;
+      const num = i + 1;
+      if(entry && entry.stream){ pdf += `${num} 0 obj\n${entry.dict}\nstream\n${entry.data}\nendstream\nendobj\n`; }
+      else { pdf += `${num} 0 obj\n${entry}\nendobj\n`; }
+    });
+    const xrefStart = pdf.length;
+    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    for(let i = 1; i <= objects.length; i++){ pdf += String(offsets[i]).padStart(10, '0') + ' 00000 n \n'; }
+    pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogObjNum} 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
+
+    const bytes = new Uint8Array(pdf.length);
+    for(let i = 0; i < pdf.length; i++){ bytes[i] = pdf.charCodeAt(i) & 0xFF; }
+    return new Blob([bytes], { type: 'application/pdf' });
+  }catch(err){
+    return null;
+  }
+}
+
+// 📄 Genera y comparte/abre el PDF de la nota exacta asociada a esta cuenta.
+async function generarPDFParaCuenta(folio){
+  const venta = cxcVentasPorFolio[folio];
+  const cuenta = cxcCuentasCache.find(c => c.folio === folio);
+  if(!venta || !cuenta){
+    showToast('No se encontró la nota original de esta cuenta', true);
+    return;
+  }
+  showToast('Generando PDF…');
+  const blob = await generarPDFBlobParaVenta(venta, cuenta);
+  if(!blob){
+    showToast('No se pudo generar el PDF. Intenta de nuevo.', true);
+    return;
+  }
+  const file = new File([blob], `Nota-${folio}.pdf`, { type: 'application/pdf' });
+  if(navigator.canShare && navigator.canShare({ files: [file] })){
+    try{ await navigator.share({ files: [file], title: `Nota ${folio}` }); return; }
+    catch(err){ return; }
+  }
+  const url = URL.createObjectURL(blob);
+  const ventana = window.open(url, '_blank');
+  if(!ventana){
+    showToast('Tu navegador bloqueó la vista del PDF. Revisa la configuración de ventanas emergentes.', true);
+  }
+}
+
+// 📲📄 Genera el PDF y lo comparte junto con el mensaje a través del sistema nativo del iPad.
+// Si el navegador no permite adjuntar archivos directamente, NO se simula ningún envío:
+// se avisa con claridad y se sugiere usar los botones de WhatsApp y PDF por separado.
+async function enviarWhatsAppMasPDF(folio){
+  const venta = cxcVentasPorFolio[folio];
+  const cuenta = cxcCuentasCache.find(c => c.folio === folio);
+  if(!venta || !cuenta){
+    showToast('No se encontró la nota original de esta cuenta', true);
+    return;
+  }
+  const mensaje = construirMensajeCxC(cuenta);
+  showToast('Generando PDF…');
+  const blob = await generarPDFBlobParaVenta(venta, cuenta);
+  if(!blob){
+    showToast('No se pudo generar el PDF. Intenta de nuevo.', true);
+    return;
+  }
+  const file = new File([blob], `Nota-${folio}.pdf`, { type: 'application/pdf' });
+  if(navigator.canShare && navigator.canShare({ files: [file] })){
+    try{ await navigator.share({ files: [file], text: mensaje, title: `Nota ${folio}` }); return; }
+    catch(err){ return; }
+  }
+  showToast('Tu navegador no permite compartir archivos directamente. Usa los botones "WhatsApp" y "PDF" por separado.', true);
+}
+
+$('cxcBody').addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-cxc-accion]');
+  if(!btn) return;
+  const folio = btn.dataset.cxcAccionFolio;
+  const accion = btn.dataset.cxcAccion;
+  if(accion === 'whatsapp') enviarWhatsAppCxC(folio);
+  else if(accion === 'pdf') generarPDFParaCuenta(folio);
+  else if(accion === 'combo') enviarWhatsAppMasPDF(folio);
+});
+
+/* ============================================================
+   DASHBOARD — módulo de solo lectura. NO crea ninguna tabla nueva:
+   lee directamente STORE_VENTAS y STORE_CXC (las mismas que ya usan
+   Historial y Cuentas por Cobrar) y calcula todo en memoria, cada
+   vez que se abre o se cambia el período. No modifica ni un solo
+   registro existente. ============================================================ */
+let dashPeriodoActual = 'hoy';
+
+function dashRangoFechas(periodo){
+  const ahora = new Date();
+  let inicio;
+  if(periodo === 'hoy'){
+    inicio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+  } else if(periodo === 'semana'){
+    const dia = ahora.getDay();
+    const diffLunes = (dia === 0 ? 6 : dia - 1);
+    inicio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() - diffLunes);
+  } else if(periodo === 'mes'){
+    inicio = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+  } else { // anio
+    inicio = new Date(ahora.getFullYear(), 0, 1);
+  }
+  return { inicio, fin: ahora };
+}
+
+function dashAgruparVentas(ventas, periodo){
+  const grupos = {}; const orden = [];
+  if(periodo === 'hoy'){
+    ventas.forEach(v=>{
+      const h = new Date(v.fechaISO).getHours();
+      const key = String(h).padStart(2,'0') + ':00';
+      grupos[key] = (grupos[key] || 0) + v.total;
+    });
+    Object.keys(grupos).sort().forEach(k => orden.push(k));
+  } else if(periodo === 'semana'){
+    const dias = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+    const hoy = new Date();
+    const diaSemana = hoy.getDay();
+    const diffLunes = (diaSemana === 0 ? 6 : diaSemana - 1);
+    const lunes = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - diffLunes);
+    for(let i=0;i<7;i++){
+      const d = new Date(lunes); d.setDate(lunes.getDate()+i);
+      const key = dias[d.getDay()];
+      grupos[key] = 0; orden.push(key);
+    }
+    ventas.forEach(v=>{
+      const key = dias[new Date(v.fechaISO).getDay()];
+      grupos[key] = (grupos[key] || 0) + v.total;
+    });
+  } else if(periodo === 'mes'){
+    const hoy = new Date();
+    const diasEnMes = new Date(hoy.getFullYear(), hoy.getMonth()+1, 0).getDate();
+    for(let i=1;i<=diasEnMes;i++){ grupos[String(i)] = 0; orden.push(String(i)); }
+    ventas.forEach(v=>{
+      const key = String(new Date(v.fechaISO).getDate());
+      grupos[key] = (grupos[key] || 0) + v.total;
+    });
+  } else { // anio
+    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    meses.forEach(m => { grupos[m] = 0; orden.push(m); });
+    ventas.forEach(v=>{
+      const key = meses[new Date(v.fechaISO).getMonth()];
+      grupos[key] = (grupos[key] || 0) + v.total;
+    });
+  }
+  return { labels: orden, valores: orden.map(k => grupos[k]) };
+}
+
+function dashRenderGrafica(labels, valores){
+  const wrap = $('dashGrafica');
+  const totalConDatos = valores.reduce((s,v)=>s+v, 0);
+  if(totalConDatos <= 0){
+    wrap.innerHTML = '';
+    $('dashGraficaVacio').style.display = 'block';
+    return;
+  }
+  $('dashGraficaVacio').style.display = 'none';
+  const max = Math.max(1, ...valores);
+  wrap.innerHTML = labels.map((lbl, i)=>{
+    const alturaPct = Math.max((valores[i] / max) * 100, valores[i] > 0 ? 4 : 0);
+    return `<div class="dash-barra-col">
+      <div class="dash-barra-valor">${valores[i] > 0 ? fmtMoney(valores[i]) : ''}</div>
+      <div class="dash-barra" style="height:${alturaPct}%;"></div>
+      <div class="dash-barra-lbl">${lbl}</div>
+    </div>`;
+  }).join('');
+}
+
+async function renderDashboard(){
+  let todasVentas = [];
+  try{ todasVentas = await idbGetAll(STORE_VENTAS); }
+  catch(err){ showToast('No se pudo leer las ventas para el Dashboard', true); return; }
+
+  const { inicio } = dashRangoFechas(dashPeriodoActual);
+  const ventas = todasVentas.filter(v => new Date(v.fechaISO) >= inicio);
+
+  // ---- Tarjetas de resumen ----
+  const totalVendido = ventas.reduce((s,v)=> s + v.total, 0);
+  const efectivo = ventas.filter(v=>v.formaPago === 'Efectivo').reduce((s,v)=> s + v.total, 0);
+  const tarjeta = ventas.filter(v=>v.formaPago === 'Tarjeta').reduce((s,v)=> s + v.total, 0);
+  const transferencia = ventas.filter(v=>v.formaPago === 'Transferencia').reduce((s,v)=> s + v.total, 0);
+  const credito = ventas.filter(v=>v.condicion !== 'Contado').reduce((s,v)=> s + v.total, 0);
+
+  $('dashCardVentas').textContent = fmtMoney(totalVendido);
+  $('dashCardNumVentas').textContent = String(ventas.length);
+  $('dashCardEfectivo').textContent = fmtMoney(efectivo);
+  $('dashCardTarjeta').textContent = fmtMoney(tarjeta);
+  $('dashCardTransferencia').textContent = fmtMoney(transferencia);
+  $('dashCardCredito').textContent = fmtMoney(credito);
+
+  // ---- Indicadores ----
+  $('dashIndTotal').textContent = fmtMoney(totalVendido);
+  $('dashIndNotas').textContent = String(ventas.length);
+  $('dashIndTicket').textContent = ventas.length > 0 ? fmtMoney(totalVendido / ventas.length) : '$0.00';
+
+  // ---- Gráfica ----
+  const { labels, valores } = dashAgruparVentas(ventas, dashPeriodoActual);
+  dashRenderGrafica(labels, valores);
+
+  // ---- Mejores clientes (top 5 por total comprado en el período) ----
+  const porCliente = {};
+  ventas.forEach(v=>{
+    if(!porCliente[v.cliente]) porCliente[v.cliente] = { compras: 0, total: 0 };
+    porCliente[v.cliente].compras += 1;
+    porCliente[v.cliente].total += v.total;
+  });
+  const mejoresClientes = Object.entries(porCliente)
+    .sort((a,b) => b[1].total - a[1].total)
+    .slice(0, 5);
+  if(mejoresClientes.length === 0){
+    $('dashMejoresClientes').innerHTML = '';
+    $('dashClientesVacio').style.display = 'block';
+  } else {
+    $('dashClientesVacio').style.display = 'none';
+    $('dashMejoresClientes').innerHTML = mejoresClientes.map(([nombre, d]) => `
+      <tr><td>${nombre}</td><td style="text-align:right;">${d.compras}</td><td style="text-align:right; font-family:'JetBrains Mono',monospace;">${fmtMoney(d.total)}</td></tr>
+    `).join('');
+  }
+
+  // ---- Productos más vendidos (top 5 por cantidad, en el período) ----
+  const porProducto = {};
+  ventas.forEach(v=>{
+    (v.productos || []).forEach(p=>{
+      const nombre = p.producto || '—';
+      if(!porProducto[nombre]) porProducto[nombre] = { cantidad: 0, importe: 0 };
+      porProducto[nombre].cantidad += Number(p.cantidad) || 0;
+      porProducto[nombre].importe += Number(p.importe) || 0;
+    });
+  });
+  const mejoresProductos = Object.entries(porProducto)
+    .sort((a,b) => b[1].cantidad - a[1].cantidad)
+    .slice(0, 5);
+  if(mejoresProductos.length === 0){
+    $('dashMejoresProductos').innerHTML = '';
+    $('dashProductosVacio').style.display = 'block';
+  } else {
+    $('dashProductosVacio').style.display = 'none';
+    $('dashMejoresProductos').innerHTML = mejoresProductos.map(([nombre, d]) => `
+      <tr><td>${nombre}</td><td style="text-align:right;">${d.cantidad}</td><td style="text-align:right; font-family:'JetBrains Mono',monospace;">${fmtMoney(d.importe)}</td></tr>
+    `).join('');
+  }
+
+  // ---- Cuentas por cobrar (estado actual real, no filtrado por período) ----
+  let cuentasCxc = [];
+  try{ cuentasCxc = await idbGetAll(STORE_CXC); }catch(err){ cuentasCxc = []; }
+  let pendiente = 0, vencido = 0, porVencer = 0;
+  cuentasCxc.forEach(c=>{
+    const estado = calcularEstadoCxC(c);
+    if(estado === 'VENCIDA'){ vencido += c.saldo; pendiente += c.saldo; }
+    else if(estado === 'PENDIENTE'){ porVencer += c.saldo; pendiente += c.saldo; }
+  });
+  $('dashCxcPendiente').textContent = fmtMoney(pendiente);
+  $('dashCxcVencido').textContent = fmtMoney(vencido);
+  $('dashCxcPorVencer').textContent = fmtMoney(porVencer);
+}
+
+async function abrirDashboard(){
+  $('dashOverlay').classList.add('open');
+  await renderDashboard();
+}
+function cerrarDashboard(){ $('dashOverlay').classList.remove('open'); }
+
+$('navDashboard').addEventListener('click', abrirDashboard);
+$('dashClose').addEventListener('click', cerrarDashboard);
+$('dashOverlay').addEventListener('click', (e)=>{ if(e.target === $('dashOverlay')) cerrarDashboard(); });
+$('dashPeriodo').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  [...$('dashPeriodo').children].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  dashPeriodoActual = btn.dataset.periodo;
+  renderDashboard();
+});
+
+/* ============================================================
+   RESPALDO — EXPORTAR / IMPORTAR (.json)
+   Módulo aditivo, de solo lectura/escritura directa sobre las MISMAS
+   7 tablas de IndexedDB que ya existen (STORE_CLIENTES, STORE_PRODUCTOS,
+   STORE_VENTAS, STORE_CXC, STORE_FOLIO, STORE_CONTADOR_CLIENTES,
+   STORE_CONTADOR_PRODUCTOS). No crea ninguna tabla nueva, no modifica
+   ningún registro por sí solo — solo lee/escribe cuando el usuario
+   exporta o importa explícitamente. ============================================================ */
+const RESPALDO_STORES = {
+  clientes: STORE_CLIENTES,
+  productos: STORE_PRODUCTOS,
+  ventas: STORE_VENTAS,
+  cxc: STORE_CXC,
+  folio: STORE_FOLIO,
+  contadorClientes: STORE_CONTADOR_CLIENTES,
+  contadorProductos: STORE_CONTADOR_PRODUCTOS
+};
+const RESPALDO_ETIQUETAS = {
+  clientes: 'Clientes', productos: 'Productos', ventas: 'Ventas', cxc: 'Cuentas por cobrar',
+  folio: 'Folio (contador)', contadorClientes: 'Contador de clientes', contadorProductos: 'Contador de productos'
+};
+
+function abrirRespaldo(){
+  $('respExportConteo').style.display = 'none';
+  $('respImportConteo').style.display = 'none';
+  $('respaldoOverlay').classList.add('open');
+}
+function cerrarRespaldo(){ $('respaldoOverlay').classList.remove('open'); }
+
+function mostrarConteo(contenedorId, conteos){
+  const el = $(contenedorId);
+  el.innerHTML = Object.keys(RESPALDO_STORES).map(clave => `
+    <div class="dash-card"><div class="dc-lbl">${RESPALDO_ETIQUETAS[clave]}</div><div class="dc-val">${conteos[clave] ?? 0}</div></div>
+  `).join('');
+  el.style.display = 'grid';
+}
+
+async function exportarRespaldo(){
+  $('btnExportarRespaldo').disabled = true;
+  $('btnExportarRespaldo').textContent = 'Exportando…';
+  try{
+    const datos = {};
+    const conteos = {};
+    for(const clave of Object.keys(RESPALDO_STORES)){
+      const registros = await idbGetAll(RESPALDO_STORES[clave]);
+      datos[clave] = registros;
+      conteos[clave] = registros.length;
+    }
+    const paquete = {
+      app: 'GARDENT_PDV',
+      version: 1,
+      exportadoISO: new Date().toISOString(),
+      datos
+    };
+    const blob = new Blob([JSON.stringify(paquete, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const fechaArchivo = new Date().toISOString().slice(0,10);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gardent-pdv-respaldo-${fechaArchivo}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=> URL.revokeObjectURL(url), 4000);
+
+    mostrarConteo('respExportConteo', conteos);
+    const totalRegistros = Object.values(conteos).reduce((s,n)=>s+n, 0);
+    showToast(`Respaldo exportado correctamente — ${totalRegistros} registros en total`);
+  }catch(err){
+    showToast('No se pudo generar el respaldo. Intenta de nuevo.', true);
+  }finally{
+    $('btnExportarRespaldo').disabled = false;
+    $('btnExportarRespaldo').textContent = '📤 Exportar respaldo (.json)';
+  }
+}
+
+async function importarRespaldo(archivo){
+  $('respImportConteo').style.display = 'none';
+  let paquete;
+  try{
+    const texto = await archivo.text();
+    paquete = JSON.parse(texto);
+  }catch(err){
+    showToast('El archivo seleccionado no es un respaldo .json válido', true);
+    return;
+  }
+  if(!paquete || !paquete.datos || paquete.app !== 'GARDENT_PDV'){
+    showToast('El archivo no corresponde a un respaldo de GARDENT PDV', true);
+    return;
+  }
+
+  const conteosArchivo = {};
+  Object.keys(RESPALDO_STORES).forEach(clave => {
+    conteosArchivo[clave] = Array.isArray(paquete.datos[clave]) ? paquete.datos[clave].length : 0;
+  });
+  const totalArchivo = Object.values(conteosArchivo).reduce((s,n)=>s+n, 0);
+  const resumenTexto = Object.keys(RESPALDO_STORES)
+    .map(clave => `• ${RESPALDO_ETIQUETAS[clave]}: ${conteosArchivo[clave]}`)
+    .join('\n');
+
+  const confirmado = confirm(
+    `Este respaldo contiene:\n\n${resumenTexto}\n\nTotal: ${totalArchivo} registros.\n\n` +
+    `Se agregarán/actualizarán estos registros en tu PDV (no se elimina nada que ya tengas guardado). ¿Deseas continuar?`
+  );
+  if(!confirmado) return;
+
+  $('btnImportarRespaldo').disabled = true;
+  $('btnImportarRespaldo').textContent = 'Importando…';
+  try{
+    const conteosImportados = {};
+    for(const clave of Object.keys(RESPALDO_STORES)){
+      const registros = Array.isArray(paquete.datos[clave]) ? paquete.datos[clave] : [];
+      let importados = 0;
+      for(const registro of registros){
+        await idbPut(RESPALDO_STORES[clave], registro); // upsert: agrega o actualiza, nunca borra lo existente
+        importados++;
+      }
+      conteosImportados[clave] = importados;
+    }
+
+    // VERIFICACIÓN: se relee cada tabla desde IndexedDB y se confirma que la cantidad de
+    // registros del archivo ahora SÍ está presente en la base (no solo que no hubo error).
+    const conteosVerificados = {};
+    let todoVerificado = true;
+    for(const clave of Object.keys(RESPALDO_STORES)){
+      const actuales = await idbGetAll(RESPALDO_STORES[clave]);
+      conteosVerificados[clave] = actuales.length;
+      if(actuales.length < conteosImportados[clave]) todoVerificado = false;
+    }
+
+    mostrarConteo('respImportConteo', conteosVerificados);
+
+    if(todoVerificado){
+      showToast('Respaldo importado y verificado correctamente');
+    } else {
+      showToast('El respaldo se importó, pero la verificación posterior no coincide del todo. Revisa los conteos.', true);
+    }
+
+    // Refrescar cachés y listas visibles para que el cambio se note de inmediato
+    await refrescarClientesCache();
+    await refrescarProductosCache();
+    await loadFolio();
+    await loadClienteCounter();
+    await loadProductoCounter();
+
+  }catch(err){
+    showToast('Ocurrió un error durante la importación. Revisa el archivo e intenta de nuevo.', true);
+  }finally{
+    $('btnImportarRespaldo').disabled = false;
+    $('btnImportarRespaldo').textContent = '📥 Seleccionar archivo e importar';
+    $('respaldoArchivoInput').value = '';
+  }
+}
+
+$('navRespaldo').addEventListener('click', abrirRespaldo);
+$('respaldoClose').addEventListener('click', cerrarRespaldo);
+$('respaldoOverlay').addEventListener('click', (e)=>{ if(e.target === $('respaldoOverlay')) cerrarRespaldo(); });
+$('btnExportarRespaldo').addEventListener('click', exportarRespaldo);
+$('btnImportarRespaldo').addEventListener('click', ()=> $('respaldoArchivoInput').click());
+$('respaldoArchivoInput').addEventListener('change', (e)=>{
+  const archivo = e.target.files && e.target.files[0];
+  if(archivo) importarRespaldo(archivo);
+});
+</script>
+
+</body>
+</html>
